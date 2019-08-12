@@ -1,0 +1,4 @@
+[gerrit]
+host=localhost
+port=29418
+project=Juniper%2Fcontrail-project-config
