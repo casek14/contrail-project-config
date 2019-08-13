@@ -66,9 +66,9 @@
         Verified: -1
       stats:
     footer-message: |
-      For more information about the OpenContrail CI system, see:
+      "For more information about the OpenContrail CI system, see:
       https://github.com/Juniper/contrail-project-config/wiki/OpenContrail-CI
-      Job live status page: http://zuulv3.opencontrail.org/
+      Job live status page: http://zuulv3.opencontrail.org/"
 
 - pipeline:
     name: gate
@@ -202,9 +202,9 @@
         Verified: -2
       stats:
     footer-message: |
-      For more information about the OpenContrail CI system, see:
+      "For more information about the OpenContrail CI system, see:
       https://github.com/Juniper/contrail-project-config/wiki/OpenContrail-CI
-      Job live status page: http://zuulv3.opencontrail.org/
+      Job live status page: http://zuulv3.opencontrail.org/"
     window-floor: 20
     window-increase-factor: 2
 
@@ -233,7 +233,7 @@
         to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
         subject: "[periodic-nightly] FAILURE - {change.branch}"
     footer-message: |
-      Dockerhub: https://hub.docker.com/u/opencontrailnightly/
+      "Dockerhub: https://hub.docker.com/u/opencontrailnightly/"
 
 - pipeline:
     name: periodic-nightly-test
