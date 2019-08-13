@@ -1,0 +1,28 @@
+---
+
+- name: Check if the artifacts source dir exists on executor
+  stat:
+    path: "{{ zuul.executor.work_root }}/artifacts"
+  register: artifacts_dir
+  delegate_to: localhost
+
+- name: upload artifacts to pulp server
+  when: artifacts_dir.stat.isdir is defined and artifacts_dir.stat.isdir
+  block:
+    - name: Prepare packaging variables
+      contrail_packaging:
+        zuul: "{{ zuul }}"
+        release_type: "{{ release_type }}"
+        build_number: "{{ build_number | default(omit) }}"
+    - name: set variables
+      set_fact:
+        dest_path: /var/www/html/artifacts/{{ packaging.repo_name }}/{{ zuul.project.name }}/{{ zuul.job }}
+    - name: create target dir
+      file:
+        state: directory
+        path: "{{ dest_path }}"
+    - name: upload files
+      synchronize:
+        src: "{{ zuul.executor.work_root }}/artifacts"
+        dest: "{{ dest_path }}"
+

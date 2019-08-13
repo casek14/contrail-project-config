@@ -1,0 +1,12 @@
+---
+- hosts: all
+  roles:
+    - contrail-common-libs2
+    - zuul-include-vars
+    - install-docker-daemon
+    - role: publish-windows-containers
+      registries:
+        - host: "10.84.5.81:5000"
+          protocol: http
+        - host: "index.docker.io/opencontrailnightly"
+          protocol: https

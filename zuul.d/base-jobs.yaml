@@ -1,0 +1,12 @@
+- job:
+    name: contrail-vnc-unittest-statistics-base
+    parent: contrail-vnc-base2
+    required-projects:
+      - tungstenfabric/tungsten-test-runner
+      - tungsten-infra/ci-utils
+    irrelevant-files:
+      - specs/.*
+    post-run: playbooks/contrail-vnc-unittest-statistics-base/post
+    timeout: 57600
+    secrets:
+      - stats_opencontrail_org_test_stats

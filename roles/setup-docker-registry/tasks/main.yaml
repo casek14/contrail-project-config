@@ -1,0 +1,10 @@
+---
+
+- name: create new registry
+  include: create_registry.yaml
+  when: setup_docker_registry
+
+- name: use registry per-pipeline
+  include: set_nexus_registry.yaml
+  when: not setup_docker_registry
+

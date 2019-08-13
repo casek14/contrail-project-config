@@ -1,0 +1,3 @@
+---
+publisher_path: "{{ ansible_env.HOME }}/src/github.com/Juniper/contrail-publisher"
+

@@ -1,0 +1,22 @@
+---
+
+- hosts: builder
+  roles:
+    - role: fetch-packages
+
+- hosts: localhost
+  roles:
+    - contrail-common-libs2
+    - role: publish-rpm-nexus
+      when: release_type == 'continuous-integration'
+      remote_repo_path: "{{ nexus.repos.yum }}/{{ packaging.repo_names[hostvars['builder'].ansible_distribution] }}"
+    - role: publish-rpm-nexus
+      when: release_type == 'nightly'
+      remote_repo_path: "{{ nexus.repos.yum_nightly }}/{{ packaging.repo_names[hostvars['builder'].ansible_distribution] }}"
+  post_tasks:
+    # FIXME: https://contrail-jws.atlassian.net/browse/JD-478
+    - name: return repository location back to zuul for children jobs
+      zuul_return:
+        data:
+          contrail_container_tag: '{{ packaging.docker_version }}'
+      delegate_to: localhost

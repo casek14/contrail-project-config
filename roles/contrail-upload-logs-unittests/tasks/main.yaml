@@ -1,0 +1,47 @@
+---
+- name: Ensure that test logs are readable by the zuul user
+  shell: |
+    find {{ ansible_env.HOME }} -name '*.log*' -type f -exec chmod 0644 {} \;
+  become: true
+  become_user: root
+
+- name: Get a list of existing log files
+  find:
+    paths: .
+    file_type: any
+    patterns:
+      - retry_targets.txt
+      - retry_tests.txt
+      - scons_test-FAIL.log
+      - scons_test.log
+      - scons_test_retry.log
+  register: loglist
+
+- name: Gzip summary log files
+  archive:
+    path: "{{ item.path }}"
+    remove: true
+  with_items: "{{ loglist.files }}"
+
+- name: Send summary logs to the executor
+  synchronize:
+    mode: pull
+    src: "{{ item.path }}.gz"
+    dest: "{{ zuul.executor.log_root }}/"
+  with_items: "{{ loglist.files }}"
+
+- name: Register log directory variable
+  stat:
+    path: "{{ ansible_env.HOME }}/unittests-logs"
+  register: logdir
+
+- name: Send unittest logs to the executor
+  synchronize:
+    mode: pull
+    recursive: true
+    src: "{{ ansible_env.HOME }}/unittests-logs"
+    dest: "{{ zuul.executor.log_root }}/"
+    rsync_opts:
+      - "--exclude=third_party"
+  when: logdir.stat.isdir is defined and logdir.stat.isdir
+

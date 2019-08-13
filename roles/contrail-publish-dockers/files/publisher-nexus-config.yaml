@@ -1,0 +1,125 @@
+---
+
+# Contrail Publisher configuration
+#
+# This configuration describes a process of copying artifacts
+# from public per-review registry into the destination public registry.
+#
+# The build registry url can be overridden from the command
+# line by passing `--build-override 10.84.5.81:port`
+
+registries:
+  - name: build
+    url: 10.84.5.81:32000
+    source: True
+    untrusted: True
+  - name: ci-nexus-public
+    url: ci-nexus.englab.juniper.net:5002
+    untrusted: True
+
+# the default distribution for images
+distribution: centos
+
+# Image overrides:
+#
+# Overrides can be used to change the behavior on the per-image basis. This
+# can be used to implement custom tagging for RHEL, select which registries
+# to push images to etc.
+#
+# Currently supported keys are:
+#
+#   - `image_matcher`
+#   - `tag_matcher`
+#   - `registries`
+#   - `release_tags`
+#   - `source_tag`
+#   - `distribution`
+#
+image_overrides:
+  - image_matcher: ^.*$
+    source_tag: "rhel-queens-{{ release }}-{{ build_no }}"
+    tag_matcher: ^rhel-queens-.*$
+    release_tags:
+      - "rhel-queens-{{ release }}-{{ build_no }}"
+      - "rhel-queens-{{ release }}-latest"
+      - "rhel-{{ release }}-{{ build_no }}"
+      - "rhel-{{ release }}-latest"
+    distribution: rhel
+    registries:
+      - ci-nexus-public
+
+  - image_matcher: "^contrail-go$"
+    source_tag: "{{ release }}-{{ build_no }}"
+    tag_matcher: "^master-.*$"
+    release_tags:
+      - "master-{{ build_no }}"
+      - "master-latest"
+      - "latest"
+    registries:
+      - ci-nexus-public
+
+  - image_matcher: "^contrail-go$"
+    source_tag: "{{ release }}-{{ build_no }}"
+    release_tags:
+      - "{{ release }}-{{ build_no }}"
+      - "{{ release }}-latest"
+    registries:
+      - ci-nexus-public
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^newton-.*$"
+    release_tags:
+      - "newton-{{ release }}-{{ build_no }}"
+      - "newton-{{ release }}-latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^ocata-.*$"
+    release_tags:
+      - "ocata-{{ release }}-{{ build_no }}"
+      - "ocata-{{ release }}-latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^queens-master-.*$"
+    release_tags:
+      - "queens-master-{{ build_no }}"
+      - "queens-master-latest"
+      - "master-{{ build_no }}"
+      - "master-latest"
+      - "latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^queens-.*$"
+    release_tags:
+      - "queens-{{ release }}-{{ build_no }}"
+      - "queens-{{ release }}-latest"
+      - "{{ release }}-{{ build_no }}"
+      - "{{ release }}-latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^rocky-master-.*$"
+    release_tags:
+      - "rocky-master-{{ build_no }}"
+      - "rocky-master-latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^rocky-.*$"
+    release_tags:
+      - "rocky-{{ release }}-{{ build_no }}"
+      - "rocky-{{ release }}-latest"
+
+# rhel_marker and openstack_release have two variants: _lhs and _rhs depending
+# on how they are used:
+#
+# They either end (lhs) or start (rhs) with a hyphen, to make combining them with other
+# parts of the source tag easier.
+
+# WARNING: source tags have wrong release - the micro part is missing.
+# ocata-5.0-27 and newton-5.0-27
+source_tag: "{{ openstack_release_lhs }}{{ release }}-{{ build_no }}"
+
+# The default set of tags to apply to images.
+# XXX(kklimonda): that seems pointless, we override everything.
+release_tags:
+  # 5.0.0-0.27-newton (-ocata is being overridden above)
+  - "{{ release }}-0.{{ build_no }}{{ openstack_release_rhs }}"
+

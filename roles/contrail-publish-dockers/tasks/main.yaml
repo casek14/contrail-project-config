@@ -1,0 +1,77 @@
+---
+
+- name: install packages
+  package:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items:
+    - epel-release
+    - python36
+
+- name: install virtualenv for publisher
+  command: python36 -m venv venv
+  args:
+    chdir: "{{ publisher_path }}"
+
+- name: install requirements
+  shell: |
+    . venv/bin/activate
+    pip install -r requirements.txt
+  args:
+    chdir: "{{ publisher_path }}"
+
+- name: copy publisher config
+  copy:
+    src: publisher-{{ item }}-config.yaml
+    dest: "{{ publisher_path }}/publisher-{{ item }}-config.yaml"
+  with_items:
+    - internal
+    - nexus
+
+- name: Push to internal registry
+  shell: |
+    . venv/bin/activate
+    python36 publisher.py --config publisher-internal-config.yaml --build-registry 10.84.5.81:{{ docker_registry_port }} --release {{ contrail_packaging.version.public }} --build {{ build_number }} --openstack_release {{ item }}
+  become: true
+  args:
+    chdir: "{{ publisher_path }}"
+  with_items:
+    - newton
+    - ocata
+    - queens
+    - rocky
+
+- name: Push build to internal Nexus docker registry
+  when: zuul is defined and zuul.pipeline is defined and zuul.pipeline == 'periodic-nightly-test'
+  block:
+    - name: Debug information for Nexus docker registry
+      debug:
+        msg: "User '{{ registry_tungsten_ci.user }}' for repository '{{ nexus.fqdn }}:{{ nexus.registry.tungsten_nightly }}'"
+
+    - name: Log in to internal Nexus docker registry
+      command: "docker login -u '{{ registry_tungsten_ci.user }}' -p '{{ registry_tungsten_ci.password }}'  '{{ nexus.fqdn }}:{{ nexus.registry.tungsten_nightly }}'"
+      no_log: true
+      become: true
+
+    - name: Push to Nexus
+      shell: |
+        . venv/bin/activate
+        python36 publisher.py --config publisher-nexus-config.yaml --build-registry 10.84.5.81:{{ docker_registry_port }} --release {{ contrail_packaging.version.public }} --build {{ build_number }} --openstack_release {{ item }}
+      become: true
+      args:
+        chdir: "{{ publisher_path }}"
+      with_items:
+        - newton
+        - ocata
+        - queens
+        - rocky
+
+    - name: Log out from internal Nexus docker registry
+      command: "docker logout '{{ nexus.fqdn }}:{{ nexus.registry.tungsten_nightly }}'"
+      become: true
+
+- name: Show the list of docker images
+  command: docker images
+  become: true
+

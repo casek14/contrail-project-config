@@ -1,0 +1,84 @@
+---
+
+- name: Prepare packaging variables
+  contrail_packaging:
+    zuul: "{{ zuul }}"
+    release_type: "{{ release_type }}"
+
+- name: Add a repository with Contrail dependencies
+  apt_repository:
+    repo: "deb http://{{ zuul_site_mirror_fqdn }}/ubuntu contrail-{{ ansible_distribution_release }} {{ zuul.branch | match('^R\\d(\\.\\d+)+$') | ternary(zuul.branch, 'master') }}"
+  become: true
+  become_user: root
+
+# rsync requires that target parent directories are already in place,
+# so create everything ahead of time.
+- name: Create directory structure for rsync
+  file:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+    state: directory
+  with_items:
+    - "{{ packaging.target_dir }}/"
+    - "{{ packaging.target_dir }}/src/"
+    - "{{ packaging.target_dir }}/tools/"
+    - "{{ packaging.target_dir }}/openstack/"
+
+- name: Hard-link gerrit repositories into expected structure
+  synchronize:
+    src: "{{ ansible_env.HOME }}/src/{{ item.src }}"
+    dest: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}/{{ item.dest }}"
+    rsync_opts:
+      - --no-motd
+      - --quiet
+  with_items:
+    - { src: 'review.opencontrail.org/Juniper/contrail-build/', dest: 'tools/build' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-build/SConstruct', dest: '' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-controller/', dest: 'controller' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-generateDS/', dest: 'tools/generateds' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-sandesh/', dest: 'tools/sandesh' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-third-party/', dest: 'third_party' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-vrouter/', dest: 'vrouter' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-packages/', dest: 'tools/packages' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-provisioning/', dest: 'tools/provisioning' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-api-client/', dest: 'src/contrail-api-client' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-common/', dest: 'src/contrail-common' }
+    - { src: 'review.opencontrail.org/Juniper/contrail-analytics/', dest: 'src/contrail-analytics' }
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Hard-link github repositories into expected structure
+  synchronize:
+    src: "{{ ansible_env.HOME }}/src/{{ item.src }}"
+    dest: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}/{{ item.dest }}"
+    rsync_opts:
+      - --no-motd
+      - --quiet
+  with_items: []
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Copy debian/ to enable package building
+  synchronize:
+    src: "{{ ansible_env.HOME}}/{{ packaging.debian_dir }}"
+    dest: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}/"
+    rsync_opts:
+      - --no-motd
+      - --exclude=.git
+      - --quiet
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Update debian/changelog
+  shell: |
+      dch -v "{{ packaging.full_version }}" -m ""
+      dch --release --distribution "{{ ansible_distribution_release }}" -m "Releasing version {{ packaging.full_version }}."
+  args:
+    chdir: "{{ packaging.target_dir }}"
+
+- name: Create orig tarball
+  shell: |
+      fakeroot debian/rules get-orig-source
+      mv contrail_{{ packaging.full_version }}.orig.tar.gz ../
+  args:
+    chdir: "{{ packaging.target_dir }}"
+  environment:
+    DEB_BUILD_OPTIONS: "parallel={{ ansible_processor_vcpus }} site-mirror={{ zuul_site_mirror_fqdn }}"
+

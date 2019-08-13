@@ -1,0 +1,30 @@
+---
+
+- name: Get info on last commits for each repo
+  delegate_to: localhost
+  shell: |
+    /usr/bin/git \
+    --git-dir={{ zuul.executor.work_root }}/{{ item.value.src_dir }}/.git/ \
+    log --pretty=format:"%h%x09%ad%x09%aE%x09%s" \
+    --date="local" | head -n 10
+  register: gitlog
+  environment:
+    TZ: "UTC"
+  with_dict: "{{ zuul._projects }}"
+  no_log: true
+  tags:
+    # Ignore ANSIBLE0006: Can not use git module for this task
+    - skip_ansible_lint
+
+- name: Write git log output
+  delegate_to: localhost
+  copy:
+    content: >-
+      {% for result in gitlog['results'] -%}
+      # {{ result.item.value.short_name }}
+
+      {{ result.stdout }}
+
+      {% endfor -%}
+    dest: "{{ zuul.executor.log_root }}/zuul-info/gitlog.{{ inventory_hostname }}.md"
+

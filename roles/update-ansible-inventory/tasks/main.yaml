@@ -1,0 +1,5 @@
+---
+
+- include: update_ansible_inventory.yaml
+  when: zuul_host_matchers | length > 0
+

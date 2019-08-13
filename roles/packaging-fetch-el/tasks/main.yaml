@@ -1,0 +1,31 @@
+---
+
+- stat:
+    path: "{{ ansible_env.HOME }}/rpmbuild/RPMS"
+  register: rpmdir
+
+- name: test if job reached build packages phase
+  meta: end_play
+  when: rpmdir.stat.exists == false
+
+- name: create package dir on the executor
+  file:
+    path: "{{ zuul.executor.work_root }}/packages"
+    state: directory
+  delegate_to: localhost
+
+- name: get a list of package files
+  find:
+    paths: "{{ ansible_env.HOME }}/rpmbuild/RPMS"
+    recurse: true
+    patterns:
+      - '*.rpm'
+  register: package_list
+
+- name: send packages to the executor
+  synchronize:
+    src: "{{ item.path }}"
+    dest: "{{ zuul.executor.work_root }}/packages/"
+    mode: pull
+  with_items: "{{ package_list.files }}"
+

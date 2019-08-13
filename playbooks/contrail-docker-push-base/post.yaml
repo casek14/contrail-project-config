@@ -1,0 +1,9 @@
+---
+
+- hosts: all
+  roles:
+    - zuul-include-vars
+    - role: push-docker-images
+      credentials: '{{ registry_credentials }}'
+      registry: '{{ contrail_docker_registry }}'
+

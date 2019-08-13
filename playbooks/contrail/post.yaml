@@ -1,0 +1,7 @@
+---
+
+- name: send dmesg contents to the executor
+  hosts: all
+  roles:
+    - fetch-dmesg
+

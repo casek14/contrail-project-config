@@ -1,0 +1,19 @@
+---
+- hosts: all
+  roles:
+    - role: fetch-docs
+      fetch_src_path: "{{ zuul.projects | selectattr('short_name', 'equalto', 'contrail-infra-doc') | map(attribute='src_dir') | list | first }}/build/html"
+      fetch_dst_path: '{{ zuul.executor.work_root }}/build/'
+
+- hosts: localhost
+  roles:
+    - role: add-fileserver
+      fileserver: '{{ site_logs }}'
+
+- hosts: '{{ site_logs.fqdn }}'
+  gather_facts: false
+  roles:
+    - role: upload-docs
+      zuul_docserver_root: '/var/www/static/infra-doc'
+      docs_dir: '{{ zuul.executor.work_root }}/build/html/'
+

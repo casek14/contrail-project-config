@@ -1,0 +1,30 @@
+---
+
+- name: set registry name
+  set_fact:
+    registry_name: "registry_{{ contrail_packaging.repo_name | replace('-','_') }}_{{ zuul.buildset[0:10] }}"
+
+- name: start docker registry
+  docker_container:
+    name: "{{ registry_name }}"
+    image: 'registry:2'
+    state: started
+    published_ports: all
+
+- name: get registry port
+  shell: "docker ps --format '{% raw %}{{ .Ports }}{% endraw %}' --filter 'name={{ registry_name }}' 2>&1 | sed -r 's/.*:([0-9]+)->.*/\\1/'"
+  register: registry_port
+
+- name: save variable to a file on executor
+  copy:
+    content: "{{ {\"registry_port\": registry_port.stdout } | to_nice_yaml }}"
+    dest: "{{ zuul.executor.work_root }}/saved_vars.yaml"
+  delegate_to: localhost
+
+- name: 'Return registry location back to zuul for children jobs'
+  zuul_return:
+    data:
+      docker_registry_port: "{{ registry_port.stdout }}"
+      contrail_docker_registry: "{{ docker_registry.fqdn }}:{{ registry_port.stdout }}"
+  delegate_to: localhost
+

@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  roles:
+    - dump-key
+    - skip-ub-job
+    - contrail-common-libs
+    - contrail-controller-hacks
+    - packaging-prepare-contrail
+    - contrail-unittests
+

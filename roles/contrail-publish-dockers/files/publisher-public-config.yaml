@@ -1,0 +1,95 @@
+---
+
+# Contrail Publisher configuration
+#
+# This configuration describes a process of copying artifacts
+# from public per-review registry into the public ci-repo one.
+#
+# The build registry url can be overridden from the command
+# line by passing `--build-override 10.84.5.81:port`
+
+registries:
+  - name: build
+    url: 10.84.5.81:32000
+    source: True
+    untrusted: True
+  - name: ci-repo-public
+    url: 10.84.5.81:5000
+    untrusted: True
+
+# the default distribution for images
+distribution: centos
+
+# Image overrides:
+#
+# Overrides can be used to change the behavior on the per-image basis. This
+# can be used to implement custom tagging for RHEL, select which registries
+# to push images to etc.
+#
+# Currently supported keys are:
+#
+#   - `image_matcher`
+#   - `tag_matcher`
+#   - `registries`
+#   - `release_tags`
+#   - `source_tag`
+#   - `distribution`
+#
+image_overrides:
+  - image_matcher: ^.*$
+    source_tag: "rhel-{{ release }}-{{ build_no }}"
+    tag_matcher: ^rhel-.*$
+    release_tags:
+      - "rhel-{{ release }}-{{ build_no }}"
+      - "rhel-{{ release }}-latest"
+    distribution: rhel
+    registries:
+      - ci-repo-public
+
+  - image_matcher: "^contrail-go$"
+    source_tag: "{{ release }}-{{ build_no }}"
+    tag_matcher: "^master-.*$"
+    release_tags:
+      - "master-{{ build_no }}"
+      - "master-latest"
+      - "latest"
+    registries:
+      - ci-repo-public
+
+  - image_matcher: "^contrail-go$"
+    source_tag: "{{ release }}-{{ build_no }}"
+    release_tags:
+      - "{{ release }}-{{ build_no }}"
+      - "{{ release }}-latest"
+    registries:
+      - ci-repo-public
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^.*$"
+    release_tags:
+      - "{{ release }}-{{ build_no }}"
+      - "{{ release }}-latest"
+
+  - image_matcher: "^.*$"
+    tag_matcher: "^master-.*$"
+    release_tags:
+      - "master-{{ build_no }}"
+      - "master-latest"
+      - "latest"
+
+# rhel_marker and openstack_release have two variants: _lhs and _rhs depending
+# on how they are used:
+#
+# They either end (lhs) or start (rhs) with a hyphen, to make combining them with other
+# parts of the source tag easier.
+
+# WARNING: source tags have wrong release - the micro part is missing.
+# ocata-5.0-27 and newton-5.0-27
+source_tag: "{{ openstack_release_lhs }}{{ release }}-{{ build_no }}"
+
+# The default set of tags to apply to images.
+# XXX(kklimonda): that seems pointless, we override everything.
+release_tags:
+  # 5.0.0-0.27-newton (-ocata is being overridden above)
+  - "{{ release }}-0.{{ build_no }}{{ openstack_release_rhs }}"
+

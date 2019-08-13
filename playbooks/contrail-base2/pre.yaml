@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  roles:
+    - contrail-common-libs2
+    - configure-hosts-entries
+
+- hosts: all
+  roles:
+    - role: configure-hosts-entries
+      hosts_entries:
+        - fqdn: "{{ ansible_fqdn }}"
+          address: "{{ ansible_all_ipv4_addresses[0] }}"
+
+- hosts: localhost
+  roles:
+    - role: add-fileserver
+      fileserver: "{{ site_pulp }}"
+
+- hosts: "{{ site_pulp.fqdn }}"
+  roles:
+    - zuul-include-vars
+    - setup-docker-registry
+

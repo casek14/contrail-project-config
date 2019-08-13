@@ -1,0 +1,21 @@
+---
+
+- hosts: all
+  roles:
+    - zuul-include-vars
+    - install-docker-daemon
+    - role: add-insecure-registry
+      new_registry: "{{ docker_registry.fqdn }}:{{ docker_registry.port }}"
+    - role: add-insecure-registry
+      new_registry: "{{ contrail_docker_registry }}"
+    - role: add-insecure-registry
+      new_registry: "{{ nexus.fqdn }}:{{ nexus.registry.tungsten_nightly }}"
+    - contrail-publish-dockers
+    - role: publish-windows-containers
+      when: "contrail_packaging.version.public == 'disable_master'"
+      registries:
+        - host: "{{ docker_registry.fqdn }}:{{ docker_registry.port }}"
+          protocol: http
+        - host: index.docker.io/opencontrailnightly
+          protocol: https
+

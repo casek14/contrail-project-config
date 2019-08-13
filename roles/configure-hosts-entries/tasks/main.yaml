@@ -1,0 +1,25 @@
+---
+- name: Ensure that all the required entries in /etc/hosts are present
+  lineinfile:
+    path: /etc/hosts
+    line: "{{ item.address }} {{ item.fqdn }}"
+  with_items: "{{ hosts_entries }}"
+  become: true
+
+# contrail code assumes this in tests, since it uses socket.fqdn(..) but expects the result
+# to be 'localhost' when for CentOS it would return 'localhost.localdomain'
+# see e.g.: https://github.com/Juniper/contrail-analytics/blob/b488e3cd608643ae5dd1e0dcbc03c9e8768178ce/contrail-opserver/alarmgen.py#L872
+
+- name: ensure that 127.0.0.1 reverse resolves to only 'localhost'
+  lineinfile:
+    path: '/etc/hosts'
+    line: '127.0.0.1 localhost'
+    regexp: '^127\.0\.0\.1'
+  become: true
+
+- name: ensure that ::1 reverse resolves to only 'localhost'
+  lineinfile:
+    path: '/etc/hosts'
+    line: '::1 localhost'
+    regexp: '^::1'
+  become: true

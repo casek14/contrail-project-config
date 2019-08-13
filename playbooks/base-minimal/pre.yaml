@@ -1,0 +1,8 @@
+---
+
+- hosts: all
+  roles:
+    - add-build-sshkey
+    - start-zuul-console
+    - validate-host
+

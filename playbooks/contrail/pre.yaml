@@ -1,0 +1,23 @@
+---
+
+- hosts: localhost
+  roles:
+    - role: emit-job-header
+      zuul_log_url: "http://logs.opencontrail.org"
+
+- hosts: all
+  roles:
+    - contrail-common-libs
+    - disable-os-unattended-upgrades
+    - add-build-sshkey
+    - start-zuul-console
+    - configure-hosts-entries
+    - validate-host
+    - gitlog-upload
+- hosts: all
+  roles:
+    - role: configure-hosts-entries
+      hosts_entries:
+        - fqdn: "{{ ansible_fqdn }}"
+          address: "{{ ansible_all_ipv4_addresses[0] }}"
+
