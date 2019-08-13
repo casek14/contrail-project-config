@@ -1,0 +1,6 @@
+---
+- name: send sanitytest logs to the executor
+  hosts: all
+  roles:
+    - fetch-k8s-pods-logs
+

@@ -1,0 +1,11 @@
+---
+- name: "Build container {{ item|replace('/','-') }}"
+  command: "./build.sh {{ item }}"
+  args:
+    chdir: "{{ build_dir }}/containers"
+  become: true
+  register: container_build
+  retries: 5
+  delay: 30
+  until: container_build.rc == 0
+

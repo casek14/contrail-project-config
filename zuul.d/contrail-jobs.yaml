@@ -1,0 +1,381 @@
+# Jobs for testing Contrail projects
+
+- job:
+    name: contrail-vnc-build-package-centos74
+    parent: contrail-vnc-build-package-el-base
+    nodeset:
+      nodes:
+        - name: builder
+          label: centos-7-4-builder
+
+- job:
+    name: contrail-vnc-build-package-rhel7-queens
+    parent: contrail-vnc-build-package-el-base
+    nodeset: builder-rhel-7
+    vars:
+      openstack_version: queens
+
+- job:
+    name: contrail-vnc-unittest-centos7-tntestr
+    parent: contrail-vnc-unittest-tntestr-base
+    voting: False
+    nodeset: builder-centos-7
+    irrelevant-files:
+      - docs/.*
+      - README.md
+
+- job:
+    name: contrail-vrouter-ut-centos7
+    parent: contrail-vnc-base
+    run: playbooks/contrail-vrouter-ut-base/main.yaml
+    nodeset: builder-centos-7
+    voting: False
+
+- job:
+    name: contrail-sanity-centos7-kolla-ocata
+    parent: contrail-sanity-kolla-base
+    required-projects:
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/ocata
+    vars:
+      openstack_version: ocata
+      kolla_version: ocata
+    nodeset: c7-systest-c-aio
+
+- job:
+    name: contrail-sanity-centos7-kolla-queens
+    parent: contrail-sanity-kolla-base
+    required-projects:
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/queens
+    vars:
+      openstack_version: queens
+      kolla_version: queens
+    nodeset: c7-systest-c-aio
+
+- job:
+    name: contrail-sanity-centos7-kolla-queens-multinode
+    parent: contrail-sanity-kolla-base
+    required-projects:
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/queens
+    vars:
+      openstack_version: queens
+      kolla_version: queens
+    nodeset: c7-systest-c-multinode
+
+- job:
+    name: contrail-sanity-centos7-kolla-rocky
+    branches: ^(R1907|R1908|R5.1|master|contrail\/rocky)$
+    parent: contrail-sanity-kolla-base
+    required-projects:
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/rocky
+    vars:
+      openstack_version: rocky
+      kolla_version: rocky
+    nodeset: c7-systest-c-aio
+
+- job:
+    name: contrail-sanity-rhel7-kolla-queens
+    parent: contrail-sanity-kolla-base
+    pre-run: playbooks/contrail-sanity-kolla-base/redhat-pre.yaml
+    required-projects:
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/queens
+    vars:
+      openstack_version: queens
+      kolla_version: queens
+    nodeset: rhel-7-sanity-aio
+
+- job:
+    name: contrail-sanity-centos7-k8s
+    parent: contrail-sanity-base
+    run: playbooks/contrail-sanity-centos7-k8s/run.yaml
+    description: |
+      A job that first deploys Contrail containers and a Kubernetes cluster
+      using contrail-ansible-deployer and runs sanity test suite on setup CI.
+    required-projects:
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-test
+    vars:
+      openstack_version: ocata
+      cloud_orchestrator: kubernetes
+      test_target: ci_k8s_sanity
+    nodeset: c7-systest-c-aio
+
+- job:
+    name: contrail-go-sanity-centos7-k8s
+    parent: contrail-sanity-base
+    run: playbooks/contrail-go-sanity-centos7-k8s/run.yaml
+    description: |
+      A job that first deploys Contrail containers and a Kubernetes cluster
+      using contrail-ansible-deployer, switches Configuration Node components to contrail-go
+      and runs sanity test suite on setup CI.
+    required-projects:
+      - Juniper/contrail
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-test
+    vars:
+      cloud_orchestrator: kubernetes
+      test_target: ci_contrail_go_k8s_sanity
+    nodeset: c7-systest-c-aio
+    timeout: 3600
+
+- job:
+    name: contrail-go-sanity-centos7-kolla-ocata
+    parent: contrail-sanity-base
+    run: playbooks/contrail-go-sanity-centos7-kolla-ocata/run.yaml
+    description: |
+      Deploy Contrail containers and a Openstack cluster using contrail-ansible-deployer
+      and switch Configuration Node components to contrail-go on setup CI.
+    required-projects:
+      - Juniper/contrail
+      - Juniper/contrail-ansible-deployer
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/ocata
+      - Juniper/contrail-test
+    vars:
+      cloud_orchestrator: openstack
+      openstack_version: ocata
+      kolla_version: ocata
+      kolla_docker_distro: centos
+      test_target: ci_contrail_go_kolla_ocata_sanity
+    nodeset: c7-systest-c-aio
+    timeout: 3600
+
+- job:
+    name: contrail-deploy-rhel7-openshift-3.9
+    parent: contrail-sanity-base
+    description: |
+      Base job for setting up OpenShift with Contrail as CNI.
+    run: playbooks/contrail-deploy-openshift-base/run.yaml
+    vars:
+      openstack_version: queens
+      cloud_orchestrator: kubernetes # yes, this is correct..
+      openshift_version: 3.9
+      openshift_deployment_type: openshift-enterprise
+      contrail_image_os: rhel
+    required-projects:
+      - name: Juniper/openshift-ansible
+        override-checkout: release-3.9-contrail
+    roles:
+      - zuul: Juniper/openshift-ansible
+    nodeset:
+      nodes:
+        - name: openshift-master
+          label: rhel-7-builder
+        - name: openshift-infra
+          label: rhel-7-builder
+        - name: openshift-compute
+          label: rhel-7-builder
+        - name: deployment-1
+          label: ubuntu-xenial-small
+      groups:
+        - name: deployment
+          nodes:
+            - deployment-1
+
+- job:
+    name: contrail-sanity-rhel7-openshift-3.9
+    parent: contrail-sanity-openshift-base
+    vars:
+      openshift_version: 3.9
+      openshift_deployment_type: openshift-enterprise
+      contrail_image_os: rhel
+    required-projects:
+      - name: Juniper/openshift-ansible
+        override-checkout: release-3.9-contrail
+    nodeset:
+      nodes:
+        - name: openshift-master
+          label: rhel-7-builder
+        - name: openshift-infra
+          label: rhel-7-builder
+        - name: openshift-compute
+          label: rhel-7-builder
+        - name: deployment-1
+          label: ubuntu-xenial-small
+      groups:
+        - name: deployment
+          nodes:
+            - deployment-1
+
+- job:
+    name: contrail-sanity-ubuntu1604-helm-ocata
+    parent: contrail-helm-base
+    run: playbooks/contrail-sanity-ubuntu1604-helm-ocata/run.yaml
+    vars:
+      openstack_version: ocata
+      test_target: ci_sanity
+
+- job:
+    name: post-nightly-registry-port
+    voting: False
+    parent: contrail-base2
+    run: playbooks/post-nightly-registry-port.yaml
+    nodeset: ubuntu-xenial
+    vars:
+      release_type: nightly
+      setup_docker_registry: true
+
+- job:
+    name: build-third-party-rpms-centos7
+    parent: build-third-party-rpms-base
+    nodeset: builder-centos-7
+
+- job:
+    name: lint-rpm-specs
+    description: |
+      This job runs rpmlint on all RPM spec files found in a repository.
+      Afterwards, it prints out descriptions of all existing errors.
+    run: playbooks/lint-rpm-specs/run.yaml
+    parent: contrail-src-base
+    nodeset: builder-centos-7
+
+- job:
+    name: generate-build-change-info-czj
+    parent: contrail-src-base
+    description: |
+      This job generates a HTML report of changes included in the last nightly
+      build.
+    run: playbooks/generate-build-change-info-czj/run.yaml
+    required-projects:
+      - tungsten-infra/ci-utils
+    nodeset: builder-centos-7
+
+- job:
+    name: test-dev-env
+    description: |
+      Test job for contrail-dev-env.
+      Runs a set of steps to build RPMs and containers.
+    parent: dev-env-base
+    run: playbooks/test-dev-env/run.yaml
+
+- job:
+    name: publish-dev-env
+    description: |
+      This job builds and publishes developer-sandbox container.
+    parent: dev-env-base
+    run: playbooks/publish-dev-env/run.yaml
+    vars:
+      setup_docker_registry: True
+
+- job:
+    name: contrail-windows-test-cad
+    parent: trigger-win-base
+    description: This jobs starts Jenkins job in Windows CI to test CAD.
+    vars:
+      manifest_file: windows-ci.xml
+      jenkins_job: winci-server2016-cad
+      build_number: 0
+
+- job:
+    name: contrail-build-test-containers
+    parent: docker-base
+    branches: ^(?!(R5\.0|release-3\.9-contrail)).*$
+    run: playbooks/contrail-build-test-containers/run.yaml
+    required-projects:
+      - Juniper/contrail-test
+    nodeset: builder-centos-7
+
+- job:
+    name: contrail-build-test-containers
+    parent: docker-base
+    branches:
+      - ^R5\.0$
+      - ^release-3.9-contrail$
+    override-checkout: R5.0
+    run: playbooks/contrail-build-test-containers/run.yaml
+    required-projects:
+      - Juniper/contrail-test
+    nodeset: builder-centos-7
+
+- job:
+    name: contrail-build-containers-centos7
+    parent: contrail-build-containers-base
+    nodeset: builder-centos-7
+
+- job:
+    name: contrail-build-containers-centos7-newton
+    parent: contrail-build-containers-base
+    nodeset: builder-centos-7
+    vars:
+      openstack_version: newton
+
+- job:
+    name: contrail-build-containers-centos7-ocata
+    parent: contrail-build-containers-base
+    nodeset: builder-centos-7
+    vars:
+      openstack_version: ocata
+
+- job:
+    name: contrail-build-containers-centos7-queens
+    parent: contrail-build-containers-base
+    nodeset: builder-centos-7
+    vars:
+      openstack_version: queens
+
+- job:
+    name: contrail-build-containers-rhel7-queens
+    parent: contrail-build-containers-base
+    nodeset: builder-rhel-7
+    vars:
+      openstack_version: queens
+
+- job:
+    name: contrail-build-containers-rhel7
+    parent: contrail-build-containers-base
+    nodeset: builder-rhel-7
+
+- job:
+    name: contrail-build-containers-centos7-rocky
+    branches: ^(R1907|R1908|R5.1|master|contrail\/rocky)$
+    parent: contrail-build-containers-base
+    nodeset: builder-centos-7
+    vars:
+      openstack_version: rocky
+
+- job:
+    name: linters-go
+    voting: False
+    description: |
+      This job runs linters-go job for contrail-generateds, contrail-api-client
+      and contrail-go-api repos
+    run: playbooks/linters-go/run.yaml
+    nodeset:
+      nodes:
+        - name: builder
+          label: ubuntu-trusty-builder
+
+- job:
+    name: contrail-build-win2016
+    parent: trigger-win-base
+    branches: ^(master|R1907)$
+    description: This jobs starts Jenkins job in Windows CI. Build only.
+    vars:
+      manifest_file: windows.xml
+      jenkins_job: winci-server-2016-prod-zuulv3
+      build_number: 0
+      test_level: Sanity
+
+- job:
+    name: contrail-alltests-win2016
+    parent: trigger-win-base
+    branches: ^(master)$
+    description: This jobs starts Jenkins job in Windows CI. Builds and runs all tests.
+    vars:
+      manifest_file: windows.xml
+      jenkins_job: winci-server-2016-prod-zuulv3
+      build_number: 0
+      test_level: All
+
+- job:
+    name: contrail-vcenter-fabric-manager-linters
+    parent: contrail-vnc-base
+    description: |
+      Run linters and unit tests on contrail-vcenter-fabric-manager
+    pre-run: playbooks/contrail-vcenter-fabric-manager/pre.yaml
+    run: playbooks/contrail-vcenter-fabric-manager/run.yaml
+    nodeset: builder-centos-7

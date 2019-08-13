@@ -1,12 +1,247 @@
+# Base jobs are jobs we don't use directly - we create variants of those and use them instead.
+
 - job:
-    name: contrail-vnc-unittest-statistics-base
-    parent: contrail-vnc-base2
+    name: contrail-vnc-base2
+    branches:
+      - ^R5\.0$
+      - ^contrail_dpdk_17_11_3$
+    parent: contrail-base2
+    description: |
+      A base job that prepares Contrail VNC sandbox using Android repo,
+      as opposed to the contrail-src-base job that copies the sources directly.
     required-projects:
-      - tungstenfabric/tungsten-test-runner
-      - tungsten-infra/ci-utils
+      - Juniper/contrail-analytics
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-api-client
+      - Juniper/contrail-build
+      - Juniper/contrail-common
+      - Juniper/contrail-controller
+      - name: Juniper/contrail-dpdk
+        override-checkout: contrail_dpdk_17_11_3
+      - Juniper/contrail-fabric-utils
+      - Juniper/contrail-generateDS
+      - Juniper/contrail-java-api
+      - Juniper/contrail-heat
+      - Juniper/contrail-neutron-plugin
+      - Juniper/contrail-nova-vif-driver
+      - Juniper/contrail-packages
+      - Juniper/contrail-provisioning
+      - Juniper/contrail-sandesh
+      - Juniper/contrail-specs
+      - Juniper/contrail-test
+      - Juniper/contrail-third-party
+      - Juniper/contrail-tripleo-puppet
+      - Juniper/contrail-vcenter-manager
+      - Juniper/contrail-vcenter-plugin
+      - Juniper/contrail-vnc
+      - Juniper/contrail-vrouter
+      - Juniper/contrail-vrouter-java-api
+      - Juniper/contrail-vro-plugin
+      - Juniper/contrail-web-controller
+      - Juniper/contrail-web-core
+      - Juniper/contrail-web-server-manager
+      - Juniper/contrail-web-storage
+      - Juniper/contrail-webui-third-party
+      - Juniper/vijava
     irrelevant-files:
       - specs/.*
-    post-run: playbooks/contrail-vnc-unittest-statistics-base/post
-    timeout: 57600
-    secrets:
-      - stats_opencontrail_org_test_stats
+    pre-run: playbooks/contrail-vnc-base2/pre.yaml
+
+- job:
+    name: contrail-vnc-base2
+    branches: ^(?!(R5\.0|contrail_dpdk_17_11_3)).*$
+    parent: contrail-base2
+    description: |
+      A base job that prepares Contrail VNC sandbox using Android repo,
+      as opposed to the contrail-src-base job that copies the sources directly.
+    required-projects:
+      - Juniper/contrail-analytics
+      - Juniper/contrail-api-client
+      - Juniper/contrail-build
+      - Juniper/contrail-common
+      - Juniper/contrail-controller
+      - name: Juniper/contrail-dpdk
+        override-checkout: contrail_dpdk_18_05_1
+      - Juniper/contrail-fabric-utils
+      - Juniper/contrail-generateDS
+      - Juniper/contrail-java-api
+      - Juniper/contrail-heat
+      - Juniper/contrail-neutron-plugin
+      - Juniper/contrail-nova-vif-driver
+      - Juniper/contrail-packages
+      - Juniper/contrail-provisioning
+      - Juniper/contrail-sandesh
+      - Juniper/contrail-specs
+      - Juniper/contrail-test
+      - Juniper/contrail-third-party
+      - Juniper/contrail-tripleo-puppet
+      - Juniper/contrail-vcenter-manager
+      - Juniper/contrail-vcenter-plugin
+      - Juniper/contrail-vnc
+      - Juniper/contrail-vrouter
+      - Juniper/contrail-vrouter-java-api
+      - Juniper/contrail-vro-plugin
+      - Juniper/contrail-web-controller
+      - Juniper/contrail-web-core
+      - Juniper/contrail-web-server-manager
+      - Juniper/contrail-web-storage
+      - Juniper/contrail-webui-third-party
+      - Juniper/contrail-vcenter-fabric-manager
+      - Juniper/vijava
+    irrelevant-files:
+      - specs/.*
+    pre-run: playbooks/contrail-vnc-base2/pre.yaml
+
+- job:
+    name: contrail-sanity-base
+    parent: contrail-base2
+    description: |
+      Configures hosts and log uplaod for sanity tests.
+      Requires run playbook and nodeset.
+    pre-run: playbooks/contrail-sanity-base/pre.yaml
+    post-run: playbooks/contrail-sanity-base/post.yaml
+    vars:
+      setup_docker_registry: True
+
+- job:
+    name: contrail-sanity-kolla-base
+    parent: contrail-sanity-base
+    description: |
+      Runs kolla-based sanity suite.
+      Requires nodeset, openstack_version and kolla_version.
+    pre-run: playbooks/contrail-sanity-kolla-base/pre.yaml
+    run: playbooks/contrail-sanity-kolla-base/run.yaml
+    required-projects:
+      - Juniper/contrail-ansible-deployer
+      - name: Juniper/contrail-kolla-ansible
+        override-checkout: contrail/ocata
+      - Juniper/contrail-test
+    vars:
+      cloud_orchestrator: openstack
+      kolla_docker_distro: centos
+
+- job:
+    name: contrail-sanity-openshift-base
+    parent: contrail-sanity-base
+    description: |
+      Base job for setting up OpenShift with Contrail as CNI and
+      running sanity CI tests.
+    run: playbooks/contrail-sanity-openshift-base/run.yaml
+    vars:
+      openstack_version: queens
+      cloud_orchestrator: kubernetes # yes, this is correct..
+      test_target: ci_openshift
+    required-projects:
+      - name: Juniper/openshift-ansible
+        override-checkout: release-3.9-contrail
+      - Juniper/contrail-test
+    roles:
+      - zuul: Juniper/openshift-ansible
+
+- job:
+    name: contrail-helm-base
+    parent: contrail-sanity-base
+    description: |
+      A job that deploys Contrail and OpenStack containers using contrail-helm-deployer
+    post-run: playbooks/contrail-sanity-ubuntu1604-helm-ocata/post.yaml
+    required-projects:
+      - Juniper/openstack-helm
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm-infra
+      - Juniper/contrail-test
+    vars:
+      cloud_orchestrator: openstack
+      contrail_deployer: helm
+    nodeset:
+      nodes:
+        - name: helm-aio
+          label: ubuntu-xenial-builder-xxlarge
+    roles:
+      - zuul: Juniper/contrail-helm-deployer
+
+- job:
+    name: build-third-party-rpms-base
+    parent: contrail-src-base
+    description: |
+      This job builds packages from third-party-packages repo
+      on Red Hat-based operating systems. This is a base job,
+      nodeset has to be assigned to build for a specific target.
+    voting: True
+    run: playbooks/build-third-party-rpms-base/run.yaml
+
+- job:
+    name: dev-env-base
+    parent: contrail-base2
+    description: |
+      Base job used to work on dev-env.
+    required-projects:
+      - name: Juniper/contrail-dev-env
+        override-checkout: master
+    nodeset: builder-centos-7
+
+- job:
+    name: docker-base
+    parent: contrail-base2
+    description: |
+      Prepares basic docker configuration - proxy and insecure registries.
+      Requires nodeset and run playbook.
+    pre-run: playbooks/docker-base/pre.yaml
+    vars:
+      setup_docker_registry: True
+
+- job:
+    name: contrail-build-containers-base
+    branches:
+      - ^R5\.0$
+      - ^release-3.9-contrail$
+    parent: docker-base
+    override-checkout: R5.0
+    description: |
+      Builds Contrail using contrail-container-builder.
+      Requires nodeset and openstack_version.
+    run: playbooks/contrail-build-containers-base/run.yaml
+    required-projects:
+      - Juniper/contrail-container-builder
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-deployers-containers
+      - Juniper/contrail-kolla-ansible
+      - name: Juniper/openshift-ansible
+        override-checkout: release-3.9-contrail
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm
+      - Juniper/openstack-helm-infra
+
+- job:
+    name: contrail-build-containers-base
+    branches: ^(?!(R5\.0|release-3\.9-contrail)).*$
+    parent: docker-base
+    description: |
+      Builds Contrail using contrail-container-builder.
+      Requires nodeset and openstack_version.
+    run: playbooks/contrail-build-containers-base/run.yaml
+    required-projects:
+      - Juniper/contrail-container-builder
+      - Juniper/contrail-ansible-deployer
+      - Juniper/contrail-deployers-containers
+      - Juniper/contrail-kolla-ansible
+      - name: Juniper/openshift-ansible
+        override-checkout: release-3.11-contrail
+      - Juniper/contrail-helm-deployer
+      - Juniper/openstack-helm
+      - Juniper/openstack-helm-infra
+
+- job:
+    name: contrail-vnc-unittest-tntestr-base
+    parent: contrail-vnc-unittest-statistics-base
+    pre-run: playbooks/contrail-vnc-unittest-tntestr-base/pre.yaml
+    run: playbooks/contrail-vnc-unittest-tntestr-base/main.yaml
+    post-run: playbooks/contrail-vnc-unittest-tntestr-base/post.yaml
+
+- job:
+    name: contrail-base-untrusted
+    parent: contrail-base
+    description: |
+      Adds yum-repos-prepare in untrusted context.
+    pre-run: playbooks/contrail-base-untrusted/pre.yaml
+    required-projects:
+      - Juniper/contrail-project-config

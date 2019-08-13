@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  vars:
+    contrail_zuul_jobs_path: '{{ zuul.projects  | selectattr("short_name", "equalto", "contrail-zuul-jobs") | map(attribute="src_dir") | list | first }}'
+    ansible_lint_rules_path: '{{ "{}/{}/ansible-lint-rules/".format(ansible_env.HOME, contrail_zuul_jobs_path) }}'
+  tasks:
+
+    - name: create ansible-lint config
+      copy:
+        content: |
+          rulesdir:
+            - {{ ansible_lint_rules_path }}
+          use_default_rules: true
+        dest: '{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/.ansible-lint'
+        mode: 0644
+

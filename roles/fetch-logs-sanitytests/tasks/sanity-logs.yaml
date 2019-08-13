@@ -1,0 +1,70 @@
+---
+
+- name: check whether test runner log dir exists
+  stat:
+    path: '{{ sanity_log_dir }}'
+  register: testrunner_logdir
+  become: true
+
+- name: fetch sanity logs
+  when: testrunner_logdir.stat.isdir is defined and testrunner_logdir.stat.isdir
+  block:
+  - name: 'create the log directory on executor'
+    file:
+      path: '{{ zuul.executor.log_root }}/sanity-logs'
+      state: 'directory'
+    delegate_to: localhost
+
+  - name: find the tests report xml file
+    find:
+      paths: '{{ sanity_log_dir }}'
+      pattern: 'TESTS*.xml'
+      recurse: true
+    become: true
+    register: xml_report_file
+
+  - name: find the tests report html file
+    find:
+      paths: '{{ sanity_log_dir }}'
+      pattern: 'junit*.html'
+      recurse: true
+    become: true
+    register: html_report_file
+
+  - name: find testrunner logs directory
+    find:
+      paths: '{{ sanity_log_dir }}'
+      pattern: 'logs'
+      file_type: 'directory'
+      recurse: true
+    become: true
+    register: logs_dir
+
+  - name: fetch xml report files
+    synchronize:
+      src: '{{ item.path }}'
+      dest: '{{ zuul.executor.log_root }}/sanity-logs'
+      mode: 'pull'
+    become: true
+    with_items: '{{ xml_report_file.files }}'
+    when: xml_report_file.matched > 0
+
+  - name: fetch html report files
+    synchronize:
+      src: '{{ item.path }}'
+      dest: '{{ zuul.executor.log_root }}/sanity-logs'
+      mode: 'pull'
+    become: true
+    with_items: '{{ html_report_file.files }}'
+    when: html_report_file.matched > 0
+
+  - name: fetch testrunner logs
+    synchronize:
+      src: '{{ item.path }}'
+      dest: '{{ zuul.executor.log_root }}/sanity-logs'
+      mode: 'pull'
+      recursive: true
+    become: true
+    with_items: '{{ logs_dir.files }}'
+    when: logs_dir.matched > 0
+
