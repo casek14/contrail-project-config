@@ -57,15 +57,12 @@
     start:
       gerrit:
         Verified: 0
-#      stats:
     success:
       gerrit:
         Verified: 1
-#      stats:
     failure:
       gerrit:
         Verified: -1
-#      stats:
 
 - pipeline:
     name: gate
@@ -188,16 +185,13 @@
     start:
       gerrit:
         Verified: 0
-#      stats:
     success:
       gerrit:
         Verified: 2
         submit: true
-#      stats:
     failure:
       gerrit:
         Verified: -2
-#      stats:
     window-floor: 20
     window-increase-factor: 2
 
@@ -210,21 +204,18 @@
     trigger:
       timer:
         - time: "0 0 30 12 *"
-    start:
-#      stats:
-      smtp:
-        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
-        subject: "[periodic-nightly] Starting jobs - {change.branch}"
-    success:
-#      stats:
-      smtp:
-        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
-        subject: "[periodic-nightly] SUCCESS - {change.branch}"
-    failure:
-#      stats:
-      smtp:
-        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
-        subject: "[periodic-nightly] FAILURE - {change.branch}"
+#    start:
+#      smtp:
+#        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
+#        subject: "[periodic-nightly] Starting jobs - {change.branch}"
+#    success:
+#      smtp:
+#        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
+#        subject: "[periodic-nightly] SUCCESS - {change.branch}"
+#    failure:
+#      smtp:
+#        to: cf-test@juniper.net, ci-admin@opencontrail.org, dl-contrail-sw@juniper.net
+#        subject: "[periodic-nightly] FAILURE - {change.branch}"
     footer-message: |
       "Dockerhub: https://hub.docker.com/u/opencontrailnightly/"
 
@@ -240,11 +231,11 @@
       timer:
         - time: "0 8 29 2 *"
     start:
-#      stats:
+      gerrit: {}
     success:
-#      stats:
+      gerrit: {}
     failure:
-#      stats:
+      gerrit: {}
 
 - pipeline:
     name: manual
@@ -258,11 +249,11 @@
       timer:
         - time: "0 8 29 2 *"
     start:
-#      stats:
+      gerrit: {}
     success:
-#      stats:
+      gerrit: {}
     failure:
-#      stats:
+      gerrit: {}
 
 - pipeline:
     name: experimental
@@ -287,13 +278,10 @@
             - ^release-.*-contrail$
     start:
       gerrit: {}
-#      stats:
     success:
       gerrit: {}
-#      stats:
     failure:
       gerrit: {}
-#      stats:
 
 - pipeline:
     name: experimental-sanity
@@ -320,13 +308,10 @@
             - ^release-.*-contrail$
     start:
       gerrit: {}
-#      stats:
     success:
       gerrit: {}
-#      stats:
     failure:
       gerrit: {}
-#      stats:
 
 - pipeline:
     name: post-merge
@@ -344,8 +329,8 @@
             - ^R1908$
             - ^R6.0-WIP$
     start:
-#      stats:
+      gerrit: {}
     success:
-#      stats:
+      gerrit: {}
     failure:
-#      stats:
+      gerrit: {}
