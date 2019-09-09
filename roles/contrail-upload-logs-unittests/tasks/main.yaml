@@ -17,6 +17,10 @@
       - scons_test_retry.log
   register: loglist
 
+- name: SHOW LIST OF LOG FILES
+  debug:
+    msg: LOG FILES LIST "{{ loglist.files }}"
+
 - name: Gzip summary log files
   archive:
     path: "{{ item.path }}"

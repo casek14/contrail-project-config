@@ -4,3 +4,6 @@
   roles:
     - remove-build-sshkey
 
+- hosts: all
+  roles:
+    - end-of-post-ssh

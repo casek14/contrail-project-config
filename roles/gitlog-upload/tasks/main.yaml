@@ -28,3 +28,6 @@
       {% endfor -%}
     dest: "{{ zuul.executor.log_root }}/zuul-info/gitlog.{{ inventory_hostname }}.md"
 
+- name: END OF THE PRE PHASE
+  debug:
+    msg: END OF THE PRE PHASE!!!!!!!!!!!!!!!!!

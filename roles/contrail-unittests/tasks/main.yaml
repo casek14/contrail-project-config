@@ -98,3 +98,6 @@
       {% endfor -%}
       {{- git_refs|join(",") -}}
 
+- name: RUN END OF RUN STAGE
+  debug:
+    msg: END OF RUN STAGE DONE!!!!!!!!!!!!!!!

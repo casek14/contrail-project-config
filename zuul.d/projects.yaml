@@ -3,6 +3,7 @@
     check:
       jobs:
         - contrail-vnc-build-unittest-ubuntu-trusty
+        - hello-ansible
     gate:
       queue: contrail-vnc
       jobs:
@@ -243,7 +244,7 @@
     name: Juniper/contrail-controller
     templates:
       - unittests
-      - systests
+      #- systests
       #- windows-sanity
     check:
       jobs:

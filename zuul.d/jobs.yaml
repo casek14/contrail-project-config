@@ -252,6 +252,15 @@
           label: ubuntu-trusty-builder
 
 - job:
+    name: hello-ansible
+    run: playbooks/hello-ansible/run.yaml
+    timeout: 36000
+    nodeset:
+      nodes:
+        - name: builder
+          label: ubuntu-trusty-builder
+
+- job:
     name: contrail-vnc-unittest-webui
     parent: contrail-vnc-base
     run: playbooks/unittest/webui.yaml

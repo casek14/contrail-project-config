@@ -1,0 +1,5 @@
+---
+
+- name: Pozdrav Absible Karle
+  debug:
+    msg: Karel zdravi Ansible!!!
