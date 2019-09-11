@@ -10,7 +10,7 @@
   gather_facts: false
   roles:
     - role: upload-logs
-      zuul_log_url: "http://192.168.14.10"
+      zuul_log_url: "http://192.168.14.15"
 
 - hosts: "{{ site_logs.fqdn }}"
   roles:

@@ -12,7 +12,8 @@
     - configure-hosts-entries
     - configure-mirrors
     - role: configure-maven-proxy
-      maven_repo_mirror_url: 'http://{{ nexus.fqdn }}/repository/{{ nexus.repos.maven }}/'
+#      maven_repo_mirror_url: 'http://{{ nexus.fqdn }}/repository/{{ nexus.repos.maven }}/'
+      maven_repo_mirror_url: 'https://repo.maven.apache.org/maven2/'
     - validate-host
     - prepare-workspace
     - gitlog-upload
