@@ -29,18 +29,23 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             zuul=dict(type='dict', required=True),
+            branch_var=dict(type='str', required=False),
+            patchset_var=dict(type='str', required=False),
+            change_var=dict(type='str', required=False),
+            project_var=dict(type='dict', required=False),
             release_type=dict(type='str', required=False, default=ReleaseType.CONTINUOUS_INTEGRATION),
             build_number=dict(type='str', required=False, default=''),
             openstack_version=dict(type='str', required=False, default='')
         )
     )
 
-    zuul = module.params['zuul']
+#    zuul = module.params['zuul']
     release_type = module.params['release_type']
     build_number = module.params['build_number']
     openstack_version = module.params['openstack_version']
 
-    branch = zuul['branch']
+#    branch = zuul['branch']
+    branch = module.params['branch_var']
     if not version_branch_regex.match(branch):
         branch = 'master'
     date = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -55,8 +60,10 @@ def main():
 
     if release_type == ReleaseType.CONTINUOUS_INTEGRATION:
         # Versioning in CI consists of change id, pachset and date
-        change = zuul['change']
-        patchset = zuul['patchset']
+#        change = zuul['change']
+        change = module.params['change_var']
+#        patchset = zuul['patchset']
+        patchset = module.params['patchset_var']
         version['distrib'] = "ci{change}.{patchset}".format(
             change=change, patchset=patchset, date=date
         )
@@ -69,9 +76,12 @@ def main():
             msg="Unknown release_type: %s" % (release_type,), **result
         )
     debian_dir = None
-    for project in zuul['projects']:
-        if project['short_name'] in ["contrail-packages", "packages"]:
-            debian_dir = os.path.join(project['src_dir'], "debian/contrail/debian")
+    projects = module.params['project_var']
+    for project in projects.keys():
+        print("PROJECT_SHORT_NAME: {}".format(projects[project]['short_name']))
+    for project in projects.keys():
+        if projects[project]['short_name'] in ["contrail-packages", "packages"]:
+            debian_dir = os.path.join(projects[project]['src_dir'], "debian/contrail/debian")
 
     target_dir = "contrail-%s" % (version['upstream'],)
 

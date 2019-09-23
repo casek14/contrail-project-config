@@ -10,7 +10,7 @@
   register: gitlog
   environment:
     TZ: "UTC"
-  with_dict: "{{ zuul._projects }}"
+  with_dict: "{{ zuul.projects }}"
   no_log: true
   tags:
     # Ignore ANSIBLE0006: Can not use git module for this task

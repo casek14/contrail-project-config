@@ -42,6 +42,11 @@
     - python-pip
     - python-tox
 
+- name: Remove /etc/pip.conf
+  file:
+    state: absent
+    path: "/etc/pip.conf"
+
 # Last version of pip that is pip-installable on Ubuntu
 # without breaking system pip installation
 - name: Upgrade pip

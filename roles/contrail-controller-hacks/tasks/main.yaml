@@ -1,36 +1,50 @@
 ---
 
 - name: Add review.opencontrail.org remote
-  command: git remote add gerrit "https://{{ item }}"
+  command: git remote add gerrit "http://192.168.14.13:8080/{{ item }}"
   args:
-    chdir: "{{ ansible_env.HOME }}/src/{{ item }}"
+    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
   failed_when: false
   with_items:
-    - review.opencontrail.org/Juniper/contrail-controller
-    - review.opencontrail.org/Juniper/contrail-build
-    - review.opencontrail.org/Juniper/contrail-vrouter
-    - review.opencontrail.org/Juniper/contrail-sandesh
-    - review.opencontrail.org/Juniper/contrail-generateDS
-    - review.opencontrail.org/Juniper/contrail-common
-    - review.opencontrail.org/Juniper/contrail-analytics
-    - review.opencontrail.org/Juniper/contrail-api-client
+    - Juniper/contrail-controller
+    - Juniper/contrail-build
+    - Juniper/contrail-vrouter
+    - Juniper/contrail-sandesh
+    - Juniper/contrail-generateDS
+    - Juniper/contrail-common
+    - Juniper/contrail-analytics
+    - Juniper/contrail-api-client
   tags:
     # Ignore ANSIBLE0006: Can not use git module for adding remotes
     - skip_ansible_lint
 
+- name: Remove wrong empty remote
+  command: git remote rm origin
+  args:
+    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
+  with_items:
+    - Juniper/contrail-controller
+    - Juniper/contrail-build
+    - Juniper/contrail-vrouter
+    - Juniper/contrail-sandesh
+    - Juniper/contrail-generateDS
+    - Juniper/contrail-common
+    - Juniper/contrail-analytics
+    - Juniper/contrail-api-client
+
 - name: Fetch all remotes
   command: git fetch --all
   args:
-    chdir: "{{ ansible_env.HOME }}/src/{{ item }}"
+    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
   with_items:
-    - review.opencontrail.org/Juniper/contrail-controller
-    - review.opencontrail.org/Juniper/contrail-build
-    - review.opencontrail.org/Juniper/contrail-vrouter
-    - review.opencontrail.org/Juniper/contrail-sandesh
-    - review.opencontrail.org/Juniper/contrail-generateDS
-    - review.opencontrail.org/Juniper/contrail-common
-    - review.opencontrail.org/Juniper/contrail-analytics
-    - review.opencontrail.org/Juniper/contrail-api-client
+    - Juniper/contrail-controller
+    - Juniper/contrail-build
+    - Juniper/contrail-vrouter
+    - Juniper/contrail-sandesh
+    - Juniper/contrail-generateDS
+    - Juniper/contrail-common
+    - Juniper/contrail-analytics
+    - Juniper/contrail-api-client
   tags:
     # Ignore ANSIBLE0006: Can not use git module for fetching
     - skip_ansible_lint

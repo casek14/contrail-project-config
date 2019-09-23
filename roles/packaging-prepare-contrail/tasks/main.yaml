@@ -3,11 +3,16 @@
 - name: Prepare packaging variables
   contrail_packaging:
     zuul: "{{ zuul }}"
+    branch_var: "{{ zuul.branch }}"
+    change_var: "{{ zuul.change }}"
+    patchset_var: "{{ zuul.branch }}"
+    project_var: "{{ zuul.projects }}"
     release_type: "{{ release_type }}"
 
 - name: Add a repository with Contrail dependencies
   apt_repository:
-    repo: "deb http://{{ zuul_site_mirror_fqdn }}/ubuntu contrail-{{ ansible_distribution_release }} {{ zuul.branch | match('^R\\d(\\.\\d+)+$') | ternary(zuul.branch, 'master') }}"
+#    repo: "deb http://{{ zuul_site_mirror_fqdn }}/ubuntu contrail-{{ ansible_distribution_release }} {{ zuul.branch | match('^R\\d(\\.\\d+)+$') | ternary(zuul.branch, 'master') }}"
+    repo: "deb http://apt.mirantis.com/xenial/ nightly extra"
   become: true
   become_user: root
 
@@ -31,19 +36,19 @@
       - --no-motd
       - --quiet
   with_items:
-    - { src: 'review.opencontrail.org/Juniper/contrail-build/', dest: 'tools/build' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-build/SConstruct', dest: '' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-controller/', dest: 'controller' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-generateDS/', dest: 'tools/generateds' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-sandesh/', dest: 'tools/sandesh' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-third-party/', dest: 'third_party' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-vrouter/', dest: 'vrouter' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-packages/', dest: 'tools/packages' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-provisioning/', dest: 'tools/provisioning' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-api-client/', dest: 'src/contrail-api-client' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-common/', dest: 'src/contrail-common' }
-    - { src: 'review.opencontrail.org/Juniper/contrail-analytics/', dest: 'src/contrail-analytics' }
+    - { src: 'gerrit/Juniper/contrail-build/', dest: 'tools/build' }
+    - { src: 'gerrit/Juniper/contrail-build/SConstruct', dest: '' }
+    - { src: 'gerrit/Juniper/contrail-controller/', dest: 'controller' }
+    - { src: 'gerrit/Juniper/contrail-generateDS/', dest: 'tools/generateds' }
+    - { src: 'gerrit/Juniper/contrail-sandesh/', dest: 'tools/sandesh' }
+    - { src: 'gerrit/Juniper/contrail-third-party/', dest: 'third_party' }
+    - { src: 'gerrit/Juniper/contrail-vrouter/', dest: 'vrouter' }
+    - { src: 'gerrit/Juniper/contrail-packages/', dest: 'tools/packages' }
+    - { src: 'gerrit/Juniper/contrail-provisioning/', dest: 'tools/provisioning' }
+    - { src: 'gerrit/Juniper/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
+    - { src: 'gerrit/Juniper/contrail-api-client/', dest: 'src/contrail-api-client' }
+    - { src: 'gerrit/Juniper/contrail-common/', dest: 'src/contrail-common' }
+    - { src: 'gerrit/Juniper/contrail-analytics/', dest: 'src/contrail-analytics' }
   delegate_to: "{{ inventory_hostname }}"
 
 - name: Hard-link github repositories into expected structure
@@ -80,5 +85,5 @@
   args:
     chdir: "{{ packaging.target_dir }}"
   environment:
-    DEB_BUILD_OPTIONS: "parallel={{ ansible_processor_vcpus }} site-mirror={{ zuul_site_mirror_fqdn }}"
+    DEB_BUILD_OPTIONS: "parallel={{ ansible_processor_vcpus }} site-mirror=apt.mirantis.com"
 

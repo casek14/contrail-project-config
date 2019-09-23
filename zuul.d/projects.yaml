@@ -243,7 +243,7 @@
     name: Juniper/contrail-controller
     templates:
       - unittests
-      - systests
+      #- systests
       #- windows-sanity
     check:
       jobs:
@@ -402,9 +402,9 @@
     name: Juniper/contrail-project-config
     templates:
       - noops
-    check:
-      jobs:
-        - zuul-jobs-linters
+#    check:
+#      jobs:
+#        - zuul-jobs-linters
     gate:
       queue: contrail-ci
       jobs:
@@ -659,3 +659,77 @@
       - noops
 
 
+- project:
+    name: Juniper/contrail-zuul-jobs
+    check:
+      jobs:
+        - ci-test-core-centos-7
+        - ci-test-core-ubuntu-xenial
+        - ci-test-contrail-core-centos-7
+        - ci-test-contrail-core-ubuntu-xenial
+        - ci-test-packaging-centos-7
+        - ci-test-packaging-ubuntu-xenial
+        - ci-test-containers-centos-7
+        - ci-test-containers-ubuntu-xenial
+        - ci-test-lint-rpm-specs-centos-7
+        - ci-test-ansible-lint-centos-7
+        - ci-test-publish-infra-doc
+        - ci-test-publish-infra-doc-unit
+        - ci-test-publish-rpm-nexus
+        - zuul-jobs-linters
+        - noop:
+            irrelevant-files:
+              - ^roles/.*
+              - ^playbooks/.*
+              - ^tests/.*
+    gate:
+      queue: contrail-ci
+      jobs:
+        - ci-test-core-centos-7
+        - ci-test-core-ubuntu-xenial
+        - ci-test-contrail-core-centos-7
+        - ci-test-contrail-core-ubuntu-xenial
+        - ci-test-packaging-centos-7
+        - ci-test-packaging-ubuntu-xenial
+        - ci-test-containers-centos-7
+        - ci-test-containers-ubuntu-xenial
+        - ci-test-lint-rpm-specs-centos-7
+        - ci-test-ansible-lint-centos-7
+        - ci-test-publish-infra-doc
+        - ci-test-publish-infra-doc-unit
+        - ci-test-publish-rpm-nexus
+        - zuul-jobs-linters
+        - noop:
+            irrelevant-files:
+              - ^roles/.*
+              - ^playbooks/.*
+              - ^tests/.*
+    experimental:
+      jobs:
+        - contrail-vnc-build-package-rhel7-queens
+        - contrail-build-containers-rhel7-queens:
+            dependencies:
+              - contrail-vnc-build-package-rhel7-queens
+        - contrail-build-test-containers:
+            dependencies:
+              - contrail-vnc-build-package-rhel7-queens
+        - contrail-deploy-rhel7-openshift-3.9:
+            dependencies:
+              - contrail-build-containers-rhel7-queens
+              - contrail-build-test-containers
+        - contrail-sanity-rhel7-openshift-3.9:
+            dependencies:
+              - contrail-build-containers-rhel7-queens
+              - contrail-build-test-containers
+    experimental-sanity:
+      jobs:
+        - contrail-sanity-rhel7-openshift-3.9:
+            vars:
+              contrail_version: '{{ packaging.version.public }}-latest'
+              contrail_docker_registry: '{{ docker_registry.fqdn }}:{{ docker_registry.port }}'
+              setup_docker_registry: false
+        - contrail-deploy-rhel7-openshift-3.9:
+            vars:
+              contrail_version: '{{ packaging.version.public }}-latest'
+              contrail_docker_registry: '{{ docker_registry.fqdn }}:{{ docker_registry.port }}'
+              setup_docker_registry: false
