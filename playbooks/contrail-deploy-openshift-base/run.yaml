@@ -1,0 +1,16 @@
+---
+
+- hosts: all:!deployment
+  roles:
+    - acquire-ip-address
+    - yum-repos-prepare
+    - role: configure-hosts-entries # openshift installation reconfigures /etc/resolv.conf
+      hosts_entries:
+        - fqdn: 'ci-repo.englab.juniper.net'
+          address: '10.84.5.81'
+    - install-openshift-prerequisites
+
+- hosts: deployment
+  roles:
+    - openshift-ansible
+

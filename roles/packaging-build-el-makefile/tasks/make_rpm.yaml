@@ -1,0 +1,25 @@
+---
+- name: install dependencies for {{ item }}
+  command: make -f tools/packages/Makefile dep-{{ item }}
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+  environment:
+    ENABLEMLX: 'TRUE'
+  become: yes
+  become_user: root
+  tags:
+    - skip_ansible_lint
+
+- name: run rpmbuild for {{ item }}
+  command: make -f tools/packages/Makefile rpm-{{ item }}
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+  environment:
+    BUILDTAG: "{{ build_tag | default(packaging.version.distrib) }}"
+    SRCVER: "{{ packaging.version.upstream }}"
+    SKUTAG: ocata
+    MANIFESTFILE: "{{ ansible_env.HOME }}/manifest.xml"
+    ENABLEMLX: 'TRUE'
+  tags:
+    - skip_ansible_lint
+

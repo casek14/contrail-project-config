@@ -1,0 +1,33 @@
+---
+
+- name: prepare packaging variables
+  contrail_packaging:
+    zuul: "{{ zuul }}"
+    release_type: "{{ release_type }}"
+    build_number: "{{ build_number | default('unset_build_number') }}"
+
+- name: run OS specific tasks
+  include: '{{ ansible_distribution|lower }}.yaml'
+
+- name: get list of makefile targets
+  command: make -f tools/packages/Makefile list
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+  register: rpm_list
+  tags:
+    - skip_ansible_lint
+
+- name: check variables used by makefile
+  command: make -f tools/packages/Makefile info
+  args:
+    chdir: "{{ ansible_env.HOME }}/{{ packaging.target_dir }}"
+  environment:
+    BUILDTAG: "{{ build_tag | default(packaging.version.distrib) }}"
+    SRCVER: "{{ packaging.version.upstream }}"
+    SKUTAG: ocata
+    MANIFESTFILE: "{{ ansible_env.HOME }}/manifest.xml"
+
+- name: install dependencies and build RPMs
+  include: make_rpm.yaml
+  with_items: "{{ rpm_list.stdout.split(' ') }}"
+

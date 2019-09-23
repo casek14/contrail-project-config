@@ -1,0 +1,91 @@
+- nodeset:
+    name: centos-7
+    nodes:
+      - name: centos-7
+        label: centos-7-4-builder-c
+
+- nodeset:
+    name: builder-centos-7
+    nodes:
+      - name: builder
+        label: centos-7-4-builder-c
+
+- nodeset:
+    name: ubuntu-xenial
+    nodes:
+      - name: ubuntu-xenial
+        label: ubuntu-xenial-small
+
+- nodeset:
+    name: ubuntu-xenial-c
+    nodes:
+      - name: ubuntu-xenial
+        label: xenial-small-c
+
+- nodeset:
+    name: builder-ubuntu-trusty
+    nodes:
+      - name: builder
+        label: ubuntu-trusty-builder
+
+- nodeset:
+    name: builder-ubuntu-xenial
+    nodes:
+      - name: builder
+        label: ubuntu-xenial-builder
+
+- nodeset:
+    name: builder-rhel-7
+    nodes:
+      - name: builder
+        label: rhel-7-builder
+
+- nodeset:
+    name: rhel-7-sanity-aio
+    nodes:
+      - name: rhel-aio
+        label: rhel-7-sanity
+    groups:
+      - name: control-plane
+        nodes:
+          - rhel-aio
+      - name: data-plane
+        nodes:
+          - rhel-aio
+      - name: deployment
+        nodes:
+          - rhel-aio
+
+- nodeset:
+    name: c7-systest-c-aio
+    nodes:
+      - name: kolla-aio
+        label: c7-systest-c
+    groups:
+      - name: control-plane
+        nodes:
+          - kolla-aio
+      - name: data-plane
+        nodes:
+          - kolla-aio
+      - name: deployment
+        nodes:
+          - kolla-aio
+
+- nodeset:
+    name: c7-systest-c-multinode
+    nodes:
+      - name: openstack-control-1
+        label: c7-systest-c
+      - name: openstack-compute-1
+        label: c7-systest-c
+    groups:
+      - name: deployment
+        nodes:
+          - openstack-control-1
+      - name: control-plane
+        nodes:
+          - openstack-control-1
+      - name: data-plane
+        nodes:
+          - openstack-compute-1

@@ -1,0 +1,5 @@
+---
+
+- name: prepare repos for RedHat family
+  include: prepare_repos.yaml
+  when: 'ansible_os_family == "RedHat"'

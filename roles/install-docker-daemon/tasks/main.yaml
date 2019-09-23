@@ -1,0 +1,25 @@
+---
+
+- name: load variables needed for docker daemon installation based on the OS distribution
+  include_vars: '{{ item }}'
+  with_first_found:
+    - '{{ ansible_distribution | lower }}.yaml'
+    - 'default.yaml'
+
+- include: 'pre/{{ ansible_distribution | lower }}.yaml'
+
+- name: install docker daemon
+  package:
+    name: '{{ docker_pkgname }}{%if docker_version %}{{ docker_version }}{% endif %}'
+    state: 'present'
+  become: true
+
+- name: ensure that docker daemon is running
+  systemd:
+    name: 'docker'
+    state: 'started'
+    enabled: true
+  become: true
+
+- include: 'post/{{ ansible_distribution | lower }}.yaml'
+
