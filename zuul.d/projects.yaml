@@ -215,7 +215,7 @@
         - noop
 
 - project:
-    name: Juniper/contrail-analytics
+    name: contrail/contrail-analytics
     templates:
       - unittests
       - systests
@@ -226,21 +226,21 @@
              - specs/.*
 
 - project:
-    name: Juniper/contrail-common
+    name: contrail/contrail-common
     templates:
       - unittests
       - systests
       #- windows-sanity
 
 - project:
-    name: Juniper/contrail-build
+    name: contrail/contrail-build
     templates:
       - unittests
       - systests
       #- windows-sanity
 
 - project:
-    name: Juniper/contrail-controller
+    name: contrail/contrail-controller
     templates:
       - unittests
       #- systests
@@ -251,14 +251,14 @@
             voting: False
 
 - project:
-    name: Juniper/contrail-generateDS
+    name: contrail/contrail-generateDS
     templates:
       - unittests
       - systests
       # flake8
 
 - project:
-    name: Juniper/contrail-packages
+    name: contrail/contrail-packages
     templates:
       - systests
     check:
@@ -269,7 +269,7 @@
         - contrail-vnc-build-package-rhel7-queens
 
 - project:
-    name: Juniper/contrail-sandesh
+    name: contrail/contrail-sandesh
     templates:
       - unittests
       - systests
@@ -283,7 +283,7 @@
         - contrail-vnc-specs-linter
 
 - project:
-    name: Juniper/contrail-vrouter
+    name: contrail/contrail-vrouter
     templates:
       - unittests
       - systests
@@ -293,20 +293,20 @@
         - contrail-vrouter-ut-centos7
 
 - project:
-    name: Juniper/contrail-third-party
+    name: contrail/contrail-third-party
     templates:
       - unittests
       - systests
       #- windows-sanity
 
 - project:
-    name: Juniper/contrail-neutron-plugin
+    name: contrail/contrail-neutron-plugin
     templates:
       - systests
       # flake8
 
 - project:
-    name: Juniper/contrail-nova-vif-driver
+    name: contrail/contrail-nova-vif-driver
     templates:
       - systests
       # flake8
@@ -348,7 +348,7 @@
       - systests
 
 - project:
-    name: Juniper/contrail-heat
+    name: contrail/contrail-heat
     templates:
       - systests
       # flake8
@@ -399,7 +399,7 @@
       - noops
 
 - project:
-    name: Juniper/contrail-project-config
+    name: casek14/contrail-project-config
     templates:
       - noops
 #    check:
@@ -455,13 +455,13 @@
       - systests
 
 - project:
-    name: Juniper/contrail-web-core
+    name: contrail/contrail-web-core
     templates:
       - unittests-webui
       - systests
 
 - project:
-    name: Juniper/contrail-web-controller
+    name: contrail/contrail-web-controller
     templates:
       - unittests-webui
       - systests
@@ -472,19 +472,19 @@
              - specs/.*
 
 - project:
-    name: Juniper/contrail-webui-third-party
+    name: contrail/contrail-webui-third-party
     templates:
       - unittests-webui
       - systests
 
 - project:
-    name: Juniper/contrail-web-server-manager
+    name: contrail/contrail-web-server-manager
     templates:
       - unittests-webui
       - systests
 
 - project:
-    name: Juniper/contrail-web-storage
+    name: contrail/contrail-web-storage
     templates:
       - unittests-webui
       - systests
@@ -522,7 +522,7 @@
       - build
 
 - project:
-    name: Juniper/contrail-api-client
+    name: contrail/contrail-api-client
     templates:
       - unittests
       - systests
@@ -549,7 +549,7 @@
       - helm-systests
 
 - project:
-    name: Juniper/contrail-dpdk
+    name: contrail/contrail-dpdk
     check:
       jobs:
         - contrail-vnc-build-package-centos74
@@ -572,7 +572,7 @@
       - noops
 
 - project:
-    name: Juniper/contrail-docs
+    name: contrail/contrail-docs
     templates:
       - noops
 
@@ -660,7 +660,7 @@
 
 
 - project:
-    name: Juniper/contrail-zuul-jobs
+    name: tungsten-ci/contrail-zuul-jobs
     check:
       jobs:
         - ci-test-core-centos-7

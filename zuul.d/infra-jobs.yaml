@@ -11,7 +11,7 @@
       roles to prevent total CI meltdown.
     parent: ci-test-base
     required-projects:
-      - Juniper/contrail-project-config
+      - casek14/contrail-project-config
     roles:
       - zuul: Juniper/zuul-jobs
     run: tests/core.yaml
@@ -192,7 +192,7 @@
     parent: build-third-party-rpms-base
     post-run: tests/publish-rpm-nexus.yaml
     required-projects:
-      - Juniper/contrail-third-party-packages
+      - casek14/contrail-third-party-packages
     files:
       - ^tests/.*
       - ^roles/publish-rpm-nexus/.*

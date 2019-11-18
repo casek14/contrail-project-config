@@ -19,8 +19,8 @@
       nodes:
         - name: ubuntu-xenial
           label: ubuntu-xenial-small
-    secrets:
-      - site_logs
+#    secrets:
+#      - site_logs
 
 - job:
     name: base
@@ -44,8 +44,8 @@
       nodes:
         - name: ubuntu-xenial
           label: ubuntu-xenial-small
-    secrets:
-      - site_logs
+#    secrets:
+#      - site_logs
 
 - job:
     name: contrail-base
@@ -61,9 +61,9 @@
       - zuul: Juniper/zuul-jobs
       - zuul: Juniper/contrail-zuul-jobs
     timeout: 28800
-    secrets:
-      - site_logs
-      - site_pulp
+#    secrets:
+#      - site_logs
+#      - site_pulp
 
 - job:
     name: contrail-src-base
@@ -88,38 +88,37 @@
       A base job that prepares Contrail VNC sandbox using Android repo,
       as opposed to the contrail-src-base job that copies the sources directly.
     required-projects:
-      - Juniper/contrail-analytics
-      - Juniper/contrail-api-client
-      - Juniper/contrail-build
-      - Juniper/contrail-common
-      - Juniper/contrail-controller
-      - Juniper/contrail-fabric-utils
-      - name: Juniper/contrail-dpdk
+      - contrail/contrail-analytics
+      - contrail/contrail-api-client
+      - contrail/contrail-build
+      - contrail/contrail-common
+      - contrail/contrail-controller
+      - name: contrail/contrail-dpdk
         override-checkout: contrail_dpdk_17_11_3
-      - Juniper/contrail-generateDS
-      - Juniper/contrail-heat
+      - Juniper/contrail-fabric-utils
+      - contrail/contrail-generateDS
       - Juniper/contrail-java-api
-      - Juniper/contrail-neutron-plugin
-      - Juniper/contrail-nova-vif-driver
-      - Juniper/contrail-packages
+      - contrail/contrail-heat
+      - contrail/contrail-neutron-plugin
+      - contrail/contrail-nova-vif-driver
+      - contrail/contrail-packages
       - Juniper/contrail-provisioning
-      - Juniper/contrail-sandesh
+      - contrail/contrail-sandesh
       - Juniper/contrail-specs
       - Juniper/contrail-test
-      - Juniper/contrail-third-party
+      - contrail/contrail-third-party
       - Juniper/contrail-tripleo-puppet
-      - Juniper/contrail-vcenter-plugin
       - Juniper/contrail-vcenter-manager
-      - Juniper/contrail-vcenter-fabric-manager
+      - Juniper/contrail-vcenter-plugin
       - Juniper/contrail-vnc
-      - Juniper/contrail-vrouter
+      - contrail/contrail-vrouter
       - Juniper/contrail-vrouter-java-api
       - Juniper/contrail-vro-plugin
-      - Juniper/contrail-web-controller
-      - Juniper/contrail-web-core
-      - Juniper/contrail-web-server-manager
-      - Juniper/contrail-web-storage
-      - Juniper/contrail-webui-third-party
+      - contrail/contrail-web-controller
+      - contrail/contrail-web-core
+      - contrail/contrail-web-server-manager
+      - contrail/contrail-web-storage
+      - contrail/contrail-webui-third-party
       - Juniper/vijava
     pre-run: playbooks/contrail/vnc-pre.yaml
     vars:
@@ -133,38 +132,37 @@
       A base job that prepares Contrail VNC sandbox using Android repo,
       as opposed to the contrail-src-base job that copies the sources directly.
     required-projects:
-      - Juniper/contrail-analytics
-      - Juniper/contrail-api-client
-      - Juniper/contrail-build
-      - Juniper/contrail-common
-      - Juniper/contrail-controller
-      - Juniper/contrail-fabric-utils
-      - name: Juniper/contrail-dpdk
+      - contrail/contrail-analytics
+      - contrail/contrail-api-client
+      - contrail/contrail-build
+      - contrail/contrail-common
+      - contrail/contrail-controller
+      - name: contrail/contrail-dpdk
         override-checkout: contrail_dpdk_18_05_1
-      - Juniper/contrail-generateDS
-      - Juniper/contrail-heat
+      - Juniper/contrail-fabric-utils
+      - contrail/contrail-generateDS
       - Juniper/contrail-java-api
-      - Juniper/contrail-neutron-plugin
-      - Juniper/contrail-nova-vif-driver
-      - Juniper/contrail-packages
+      - contrail/contrail-heat
+      - contrail/contrail-neutron-plugin
+      - contrail/contrail-nova-vif-driver
+      - contrail/contrail-packages
       - Juniper/contrail-provisioning
-      - Juniper/contrail-sandesh
+      - contrail/contrail-sandesh
       - Juniper/contrail-specs
       - Juniper/contrail-test
-      - Juniper/contrail-third-party
+      - contrail/contrail-third-party
       - Juniper/contrail-tripleo-puppet
-      - Juniper/contrail-vcenter-plugin
       - Juniper/contrail-vcenter-manager
-      - Juniper/contrail-vcenter-fabric-manager
+      - Juniper/contrail-vcenter-plugin
       - Juniper/contrail-vnc
-      - Juniper/contrail-vrouter
+      - contrail/contrail-vrouter
       - Juniper/contrail-vrouter-java-api
       - Juniper/contrail-vro-plugin
-      - Juniper/contrail-web-controller
-      - Juniper/contrail-web-core
-      - Juniper/contrail-web-server-manager
-      - Juniper/contrail-web-storage
-      - Juniper/contrail-webui-third-party
+      - contrail/contrail-web-controller
+      - contrail/contrail-web-core
+      - contrail/contrail-web-server-manager
+      - contrail/contrail-web-storage
+      - contrail/contrail-webui-third-party
       - Juniper/vijava
     pre-run: playbooks/contrail/vnc-pre.yaml
 
@@ -179,10 +177,10 @@
       job are then added to the Juniper/contrail-packages project.
     run: playbooks/packaging/contrail-vnc-el.yaml
     post-run: playbooks/packaging/post-vnc-el.yaml
-    secrets:
-      - site_pulp
-      - name: nexus_credentials
-        secret: registry_tungsten_ci
+#    secrets:
+#      - site_pulp
+#      - name: nexus_credentials
+#        secret: registry_tungsten_ci
 
 - job:
     name: contrail-vnc-specs-linter
@@ -199,20 +197,20 @@
       - ^R5\.0$
       - ^contrail_dpdk_17_11_3$
     required-projects:
-      - Juniper/contrail-api-client
-      - Juniper/contrail-build
-      - Juniper/contrail-controller
-      - name: Juniper/contrail-dpdk
+      - contrail/contrail-api-client
+      - contrail/contrail-build
+      - contrail/contrail-controller
+      - name: contrail/contrail-dpdk
         override-checkout: contrail_dpdk_17_11
-      - Juniper/contrail-generateDS
-      - Juniper/contrail-third-party
-      - Juniper/contrail-packages
+      - contrail/contrail-generateDS
+      - contrail/contrail-third-party
+      - contrail/contrail-packages
       - Juniper/contrail-provisioning
-      - Juniper/contrail-sandesh
-      - Juniper/contrail-vrouter
-      - Juniper/contrail-nova-vif-driver
-      - Juniper/contrail-common
-      - Juniper/contrail-analytics
+      - contrail/contrail-sandesh
+      - contrail/contrail-vrouter
+      - contrail/contrail-nova-vif-driver
+      - contrail/contrail-common
+      - contrail/contrail-analytics
     irrelevant-files:
       - specs/.*
     run: playbooks/unittest/contrail.yaml
@@ -227,20 +225,20 @@
     name: contrail-vnc-build-unittest-ubuntu-trusty
     branches: ^(?!(R5\.0|contrail_dpdk_17_11_3)).*$
     required-projects:
-      - Juniper/contrail-api-client
-      - Juniper/contrail-build
-      - Juniper/contrail-controller
-      - name: Juniper/contrail-dpdk
+      - contrail/contrail-api-client
+      - contrail/contrail-build
+      - contrail/contrail-controller
+      - name: contrail/contrail-dpdk
         override-checkout: contrail_dpdk_18_05_1
-      - Juniper/contrail-generateDS
-      - Juniper/contrail-third-party
-      - Juniper/contrail-packages
+      - contrail/contrail-generateDS
+      - contrail/contrail-third-party
+      - contrail/contrail-packages
       - Juniper/contrail-provisioning
-      - Juniper/contrail-sandesh
-      - Juniper/contrail-vrouter
-      - Juniper/contrail-nova-vif-driver
-      - Juniper/contrail-common
-      - Juniper/contrail-analytics
+      - contrail/contrail-sandesh
+      - contrail/contrail-vrouter
+      - contrail/contrail-nova-vif-driver
+      - contrail/contrail-common
+      - contrail/contrail-analytics
     irrelevant-files:
       - specs/.*
     run: playbooks/unittest/contrail.yaml
@@ -267,8 +265,8 @@
     name: build-variables-init
     parent: contrail-base-untrusted
     run: playbooks/contrail/build-variables-init.yaml
-    secrets:
-      - build_cache_db
+#    secrets:
+#      - build_cache_db
 
 - job:
     name: contrail-vnc-publish-containers-nightly
@@ -283,10 +281,10 @@
       nodes:
         - name: builder
           label: centos-7-4-builder
-    secrets:
-      - site_pulp
-      - docker_registry
-      - registry_tungsten_ci
+#    secrets:
+#      - site_pulp
+#      - docker_registry
+#      - registry_tungsten_ci
 
 # Transition to contrail-base when all jobs are ported
 - job:
@@ -304,8 +302,8 @@
     vars:
       setup_docker_registry: false
     timeout: 28800
-    secrets:
-      - site_pulp
+#    secrets:
+#      - site_pulp
 
 - job:
     name: contrail-docker-push-base
@@ -321,9 +319,9 @@
       - zuul: Juniper/contrail-zuul-jobs
     vars:
       setup_docker_registry: true
-    secrets:
-      - name: registry_credentials
-        secret: registry_tungsten_ci
+#    secrets:
+#      - name: registry_credentials
+#        secret: registry_tungsten_ci
 
 - job:
     name: contrail-build-containers-ci-base
@@ -333,67 +331,67 @@
     post-run: playbooks/contrail-build-containers-ci-base/post.yaml
     vars:
       setup_docker_registry: false
-    secrets:
-      - name: pipeline_docker_registry
-        secret: registry_tungsten_ci
+#    secrets:
+#      - name: pipeline_docker_registry
+#        secret: registry_tungsten_ci
 
-- job:
-    name: publish-infra-doc
-    description: |
-      This job is posting infra-doc html.
-    parent: build-infra-doc
-    required-projects:
-      - Juniper/contrail-zuul-jobs
-      - Juniper/contrail-infra-doc
-    post-run: playbooks/publish-infra-doc/post.yaml
-    nodeset: builder-centos-7
-    secrets:
-      - site_logs
+#- job:
+#    name: publish-infra-doc
+#    description: |
+#      This job is posting infra-doc html.
+#    parent: build-infra-doc
+#    required-projects:
+#      - Juniper/contrail-zuul-jobs
+#      - Juniper/contrail-infra-doc
+#    post-run: playbooks/publish-infra-doc/post.yaml
+#    nodeset: builder-centos-7
+#    secrets:
+#      - site_logs
 
-- job:
-    name: publish-third-party-packages
-    parent: build-third-party-rpms-base
-    description: |
-      Publish build rpms to Nexus repository.
-    required-projects:
-      - Juniper/contrail-zuul-jobs
-    post-run: playbooks/publish-third-party-packages/post.yaml
-    nodeset: builder-centos-7
-    secrets:
-      - name: nexus_credentials
-        secret: registry_tungsten_ci
+#- job:
+#    name: publish-third-party-packages
+#    parent: build-third-party-rpms-base
+#    description: |
+#      Publish build rpms to Nexus repository.
+#    required-projects:
+#      - Juniper/contrail-zuul-jobs
+#    post-run: playbooks/publish-third-party-packages/post.yaml
+#    nodeset: builder-centos-7
+#    secrets:
+#      - name: nexus_credentials
+#        secret: registry_tungsten_ci
+#
+#- job:
+#    name: trigger-win-base
+#    parent: contrail-vnc-base2
+#    description: |
+#      Triggers Windows CI system.
+#      Requires jenkins_job.
+#    run: playbooks/trigger-win-base/run.yaml
+#    required-projects:
+#      - Juniper/contrail-windows
+#      - Juniper/contrail-windows-docker-driver
+#      - Juniper/contrail-windows-test
+#    nodeset: ubuntu-xenial
+#    timeout: 18000
+#    vars:
+#      setup_docker_registry: true
+#      manifest_file: windows.xml
+#    secrets:
+#      - jenkins_winci_credentials
 
-- job:
-    name: trigger-win-base
-    parent: contrail-vnc-base2
-    description: |
-      Triggers Windows CI system.
-      Requires jenkins_job.
-    run: playbooks/trigger-win-base/run.yaml
-    required-projects:
-      - Juniper/contrail-windows
-      - Juniper/contrail-windows-docker-driver
-      - Juniper/contrail-windows-test
-    nodeset: ubuntu-xenial
-    timeout: 18000
-    vars:
-      setup_docker_registry: true
-      manifest_file: windows.xml
-    secrets:
-      - jenkins_winci_credentials
-
-- job:
-    name: create-windows-containers
-    parent: trigger-win-base
-    branches: ^(master|R1907)$
-    post-run: playbooks/publish-windows-containers/post.yaml
-    required-projects:
-      - tungsten-infra/containerregistry
-    description: This jobs starts Jenkins job in Windows CI to create Windows containers.
-    vars:
-      jenkins_job: ci-contrail-windows-nighly-build
-    secrets:
-      - dockerhub
+#- job:
+#    name: create-windows-containers
+#    parent: trigger-win-base
+#    branches: ^(master|R1907)$
+#    post-run: playbooks/publish-windows-containers/post.yaml
+#    required-projects:
+#      - tungsten-infra/containerregistry
+#    description: This jobs starts Jenkins job in Windows CI to create Windows containers.
+#    vars:
+#      jenkins_job: ci-contrail-windows-nighly-build
+#    secrets:
+#      - dockerhub
 
 - job:
     name: generate-build-change-info
@@ -403,9 +401,9 @@
       build.
     run: playbooks/generate-build-change-info/run.yaml
     required-projects:
-      - Juniper/contrail-zuul-jobs
+      - tungsten-ci/contrail-zuul-jobs
       - tungsten-infra/ci-utils
     nodeset: builder-centos-7
-    secrets:
-      - name: db_credentials
-        secret: zuul_db
+#    secrets:
+#      - name: db_credentials
+#        secret: zuul_db
