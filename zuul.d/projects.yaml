@@ -592,7 +592,7 @@
               - upstream/rpm/.*
     post-merge:
       jobs:
-        - publish-third-party-packages
+              #- publish-third-party-packages
 
 - project:
     name: Juniper/openshift-ansible
@@ -676,7 +676,7 @@
         - ci-test-publish-infra-doc
         - ci-test-publish-infra-doc-unit
         - ci-test-publish-rpm-nexus
-        - zuul-jobs-linters
+          # - zuul-jobs-linters
         - noop:
             irrelevant-files:
               - ^roles/.*
