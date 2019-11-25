@@ -133,7 +133,7 @@
       - Juniper/zuul-jobs
       - name: Juniper/zuul
         override-checkout: contrail/feature/zuulv3
-      - Juniper/contrail-zuul-jobs
+        #- Juniper/contrail-zuul-jobs
       - Juniper/contrail-helm-deployer
     vars:
       tox_envlist: linters
@@ -192,7 +192,7 @@
     parent: build-third-party-rpms-base
     post-run: tests/publish-rpm-nexus.yaml
     required-projects:
-      - contrail/contrail-third-party-packages
+      - Juniper/contrail-third-party-packages
     files:
       - ^tests/.*
       - ^roles/publish-rpm-nexus/.*

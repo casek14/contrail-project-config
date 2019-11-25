@@ -572,7 +572,7 @@
       - noops
 
 - project:
-    name: contrail/contrail-docs
+    name: Juniper/contrail-docs
     templates:
       - noops
 
@@ -590,8 +590,8 @@
         - build-third-party-rpms-centos7:
             files:
               - upstream/rpm/.*
-    post-merge:
-      jobs:
+                #    post-merge:
+                #      jobs:
               #- publish-third-party-packages
 
 - project:
