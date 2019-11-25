@@ -129,7 +129,7 @@
       ansible playbooks and roles.
     pre-run: playbooks/zuul-jobs-linters/pre.yaml
     required-projects:
-      - Juniper/contrail-project-config
+      - casek14/contrail-project-config
       - Juniper/zuul-jobs
       - name: Juniper/zuul
         override-checkout: contrail/feature/zuulv3
@@ -192,7 +192,7 @@
     parent: build-third-party-rpms-base
     post-run: tests/publish-rpm-nexus.yaml
     required-projects:
-      - casek14/contrail-third-party-packages
+      - contrail/contrail-third-party-packages
     files:
       - ^tests/.*
       - ^roles/publish-rpm-nexus/.*
