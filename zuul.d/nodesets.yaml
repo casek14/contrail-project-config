@@ -22,11 +22,11 @@
 #      - name: ubuntu-xenial
 #        label: xenial-small-c
 #
-- nodeset:
-    name: builder-ubuntu-trusty
-    nodes:
-      - name: builder
-        label: ubuntu-trusty-builder
+#- nodeset:
+#    name: builder-ubuntu-trusty
+#    nodes:
+#      - name: builder
+#        label: ubuntu-trusty-builder
 #
 #- nodeset:
 #    name: builder-ubuntu-xenial
@@ -89,3 +89,8 @@
 #      - name: data-plane
 #        nodes:
 #          - openstack-compute-1
+- nodeset:
+    name: test-nodeset
+    nodes:
+      - name: test-vm
+        label: ubuntu-xenial-small
