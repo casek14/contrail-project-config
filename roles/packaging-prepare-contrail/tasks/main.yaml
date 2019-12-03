@@ -44,7 +44,7 @@
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-third-party/', dest: 'third_party' }
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-vrouter/', dest: 'vrouter' }
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-packages/', dest: 'tools/packages' }
-    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-provisioning/', dest: 'tools/provisioning' }
+    - { src: 'github.com/Juniper/contrail-provisioning/', dest: 'tools/provisioning' }
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-api-client/', dest: 'src/contrail-api-client' }
     - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-common/', dest: 'src/contrail-common' }
