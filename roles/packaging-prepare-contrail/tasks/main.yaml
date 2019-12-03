@@ -36,19 +36,19 @@
       - --no-motd
       - --quiet
   with_items:
-    - { src: 'gerrit/Juniper/contrail-build/', dest: 'tools/build' }
-    - { src: 'gerrit/Juniper/contrail-build/SConstruct', dest: '' }
-    - { src: 'gerrit/Juniper/contrail-controller/', dest: 'controller' }
-    - { src: 'gerrit/Juniper/contrail-generateDS/', dest: 'tools/generateds' }
-    - { src: 'gerrit/Juniper/contrail-sandesh/', dest: 'tools/sandesh' }
-    - { src: 'gerrit/Juniper/contrail-third-party/', dest: 'third_party' }
-    - { src: 'gerrit/Juniper/contrail-vrouter/', dest: 'vrouter' }
-    - { src: 'gerrit/Juniper/contrail-packages/', dest: 'tools/packages' }
-    - { src: 'gerrit/Juniper/contrail-provisioning/', dest: 'tools/provisioning' }
-    - { src: 'gerrit/Juniper/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
-    - { src: 'gerrit/Juniper/contrail-api-client/', dest: 'src/contrail-api-client' }
-    - { src: 'gerrit/Juniper/contrail-common/', dest: 'src/contrail-common' }
-    - { src: 'gerrit/Juniper/contrail-analytics/', dest: 'src/contrail-analytics' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-build/', dest: 'tools/build' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-build/SConstruct', dest: '' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-controller/', dest: 'controller' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-generateDS/', dest: 'tools/generateds' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-sandesh/', dest: 'tools/sandesh' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-third-party/', dest: 'third_party' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-vrouter/', dest: 'vrouter' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-packages/', dest: 'tools/packages' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-provisioning/', dest: 'tools/provisioning' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-nova-vif-driver/', dest: 'openstack/nova_contrail_vif' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-api-client/', dest: 'src/contrail-api-client' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-common/', dest: 'src/contrail-common' }
+    - { src: 'gerrit-us2.mcp.mirantis.net/contrail/contrail-analytics/', dest: 'src/contrail-analytics' }
   delegate_to: "{{ inventory_hostname }}"
 
 - name: Hard-link github repositories into expected structure
