@@ -1,0 +1,5 @@
+---
+- name: Delete data from previous build in /root
+  shell:
+    cmd: rm -rf contrail* env.sh repo re* s* unittests-logs/
+    chdir: /root/

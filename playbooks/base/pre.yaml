@@ -9,6 +9,7 @@
   roles:
     - disable-os-unattended-upgrades
     - add-build-sshkey
+    - clean-last-build
     - configure-hosts-entries
     - role: configure-mirrors
       mirror_fqdn: "us.archive.ubuntu.com"
