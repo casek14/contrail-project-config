@@ -6,14 +6,14 @@
     chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
   failed_when: false
   with_items:
-    - Juniper/contrail-controller
-    - Juniper/contrail-build
-    - Juniper/contrail-vrouter
-    - Juniper/contrail-sandesh
-    - Juniper/contrail-generateDS
-    - Juniper/contrail-common
-    - Juniper/contrail-analytics
-    - Juniper/contrail-api-client
+    - contrail/contrail-controller
+    - contrail/contrail-build
+    - contrail/contrail-vrouter
+    - contrail/contrail-sandesh
+    - contrail/contrail-generateDS
+    - contrail/contrail-common
+    - contrail/contrail-analytics
+    - contrail/contrail-api-client
   tags:
     # Ignore ANSIBLE0006: Can not use git module for adding remotes
     - skip_ansible_lint
@@ -23,29 +23,28 @@
   args:
     chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
   with_items:
-    - Juniper/contrail-controller
-    - Juniper/contrail-build
-    - Juniper/contrail-vrouter
-    - Juniper/contrail-sandesh
-    - Juniper/contrail-generateDS
-    - Juniper/contrail-common
-    - Juniper/contrail-analytics
-    - Juniper/contrail-api-client
+    - contrail/contrail-controller
+    - contrail/contrail-build
+    - contrail/contrail-vrouter
+    - contrail/contrail-sandesh
+    - contrail/contrail-generateDS
+    - contrail/contrail-common
+    - contrail/contrail-analytics
+    - contrail/contrail-api-client
 
 - name: Fetch all remotes
   command: git fetch --all
   args:
     chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
   with_items:
-    - Juniper/contrail-controller
-    - Juniper/contrail-build
-    - Juniper/contrail-vrouter
-    - Juniper/contrail-sandesh
-    - Juniper/contrail-generateDS
-    - Juniper/contrail-common
-    - Juniper/contrail-analytics
-    - Juniper/contrail-api-client
+    - contrail/contrail-controller
+    - contrail/contrail-build
+    - contrail/contrail-vrouter
+    - contrail/contrail-sandesh
+    - contrail/contrail-generateDS
+    - contrail/contrail-common
+    - contrail/contrail-analytics
+    - contrail/contrail-api-client
   tags:
     # Ignore ANSIBLE0006: Can not use git module for fetching
     - skip_ansible_lint
-
