@@ -1,9 +1,9 @@
 ---
 
 - name: Add review.opencontrail.org remote
-  command: git remote add gerrit "http://192.168.14.13:8080/{{ item }}"
+  command: git remote add gerrit "http://gerrit.mcp.mirantis.com:29418/{{ item }}"
   args:
-    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
+    chdir: "{{ ansible_env.HOME }}/src/gerrit-us2.mcp.mirantis.net/{{ item }}"
   failed_when: false
   with_items:
     - contrail/contrail-controller
@@ -21,7 +21,7 @@
 - name: Remove wrong empty remote
   command: git remote rm origin
   args:
-    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
+    chdir: "{{ ansible_env.HOME }}/src/gerrit-us2.mcp.mirantis.net/{{ item }}"
   with_items:
     - contrail/contrail-controller
     - contrail/contrail-build
@@ -35,7 +35,7 @@
 - name: Fetch all remotes
   command: git fetch --all
   args:
-    chdir: "{{ ansible_env.HOME }}/src/gerrit/{{ item }}"
+    chdir: "{{ ansible_env.HOME }}/src/gerrit-us2.mcp.mirantis.net/{{ item }}"
   with_items:
     - contrail/contrail-controller
     - contrail/contrail-build
