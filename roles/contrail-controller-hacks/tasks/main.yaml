@@ -1,7 +1,7 @@
 ---
 
 - name: Add review.opencontrail.org remote
-  command: git remote add gerrit "http://gerrit.mcp.mirantis.com:29418/{{ item }}"
+  command: git remote add gerrit "ssh://zuul-tf@gerrit.mcp.mirantis.com:29418/{{ item }}"
   args:
     chdir: "{{ ansible_env.HOME }}/src/gerrit-us2.mcp.mirantis.net/{{ item }}"
   failed_when: false
@@ -33,7 +33,7 @@
     - contrail/contrail-api-client
 
 - name: Fetch all remotes
-  command: git fetch --all
+  command: ssh-agent sh -c 'ssh-add ~/.ssh/id_rsa_zuul; git fetch --all'
   args:
     chdir: "{{ ansible_env.HOME }}/src/gerrit-us2.mcp.mirantis.net/{{ item }}"
   with_items:
