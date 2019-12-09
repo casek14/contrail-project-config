@@ -6,10 +6,10 @@
       fileserver: "{{ site_logs }}"
     - emit-ara-html
 
-- hosts: "{{ site_logs.fqdn }}"
+- hosts: localhost
   gather_facts: false
   roles:
     - role: upload-logs
-      zuul_log_url: "http://192.168.14.14"
+      zuul_log_url: "http://192.168.14.28"
       zuul_logserver_root: "/var/www/html"
 
