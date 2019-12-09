@@ -9,7 +9,7 @@
 - hosts: localhost
   gather_facts: false
   roles:
-    - role: upload-logs
+    - role: upload-logs-casek
       zuul_log_url: "http://192.168.14.28"
       zuul_logserver_root: "/var/www/html"
 
