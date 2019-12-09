@@ -2,15 +2,29 @@
   include_role:
     name: set-zuul-log-path-fact
 
-- name: Debug all used variables
+- name: Debug all used variables1
   debug:
-    msg:
-    - "ZUUL SITE UPLOAD LOGS: {{ zuul_site_upload_logs }}"
-    - "ZUUL SUCCESS: {{ zuul_success }}"
-    - "ZUUL LOGSERVER ROOT: {{ zuul_logserver_root }}"
-    - "ZUUL LOG PATH: {{ zuul_log_path }}"
-    - "ZUUL LOG URL: {{ zuul_log_url }}"
-    - "ZUUL EXECUTOR LOG ROOT: {{ zuul.executor.log_root }}"
+    msg: "ZUUL SITE UPLOAD LOGS: {{ zuul_site_upload_logs }}"
+
+- name: Debug all used variables2
+  debug:
+    msg: "ZUUL SUCCESS: {{ zuul_success }}"
+
+- name: Debug all used variables3
+  debug:
+    msg: "ZUUL LOGSERVER ROOT: {{ zuul_logserver_root }}"
+
+- name: Debug all used variables4
+  debug:
+    msg: "ZUUL LOG PATH: {{ zuul_log_path }}"
+
+- name: Debug all used variables5
+  debug:
+    msg: "ZUUL LOG URL: {{ zuul_log_url }}"
+
+- name: Debug all used variables6
+  debug:
+    msg: "ZUUL EXECUTOR LOG ROOT: {{ zuul.executor.log_root }}"
     
 
 # Always upload (true), never upload (false) or only on failure ('failure')
