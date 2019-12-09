@@ -2,8 +2,8 @@
 
 - hosts: localhost
   roles:
-    - role: add-fileserver
-      fileserver: "{{ site_logs }}"
+          #    - role: add-fileserver
+          #      fileserver: "{{ site_logs }}"
     - emit-ara-html
 
 - hosts: localhost
