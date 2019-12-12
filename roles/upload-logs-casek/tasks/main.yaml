@@ -25,6 +25,10 @@
 - name: Debug all used variables6
   debug:
     msg: "ZUUL EXECUTOR LOG ROOT: {{ zuul.executor.log_root }}"
+
+- name: Debug all used variables7
+  debug:
+    msg: "LOG SERVER ROOT: {{zuul_logserver_root}}/{{ zuul_log_path }}"
     
 
 # Always upload (true), never upload (false) or only on failure ('failure')
@@ -64,6 +68,11 @@
       with_items:
         - job-output.txt
         - job-output.json
+
+    - name: List log files in log directory
+      find:
+        paths: /var/lib/zuul/builds
+        recurse: yes
 
     - name: Upload console log and json output
       synchronize:

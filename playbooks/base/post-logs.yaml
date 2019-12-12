@@ -6,7 +6,7 @@
           #      fileserver: "{{ site_logs }}"
     - emit-ara-html
 
-- hosts: 192.168.14.28
+- hosts: localhost
   gather_facts: false
   roles:
     - role: upload-logs-casek
